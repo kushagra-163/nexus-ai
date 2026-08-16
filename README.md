@@ -82,7 +82,7 @@ Create a `.env` file in `server/` with the following variables:
 ```env
 PORT=5000
 MONGODB_URI=mongodb://127.0.0.1:27017/nexus-ai
-JWT_SECRET=nexus_ai_super_secret_jwt_key_2026
+JWT_SECRET=your_secure_jwt_secret_here
 GEMINI_API_KEY=your_google_gemini_api_key_here
 CLIENT_URL=http://localhost:5174
 NODE_ENV=development
