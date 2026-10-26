@@ -24,7 +24,7 @@ export const matchJobDescription = async (req, res, next) => {
       jobTitle: jobTitle || aiResult.jobTitle || 'Target Role Position',
       companyName: aiResult.companyName || 'Target Organization',
       jobDescriptionText: jobDescriptionText.substring(0, 3000),
-      matchScore: aiResult.matchScore || 82,
+      matchScore: aiResult.matchScore ?? 82,
       matchingSkills: aiResult.matchingSkills || [],
       partialMatches: aiResult.partialMatches || [],
       missingSkills: aiResult.missingSkills || [],

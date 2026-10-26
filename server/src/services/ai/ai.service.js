@@ -81,27 +81,143 @@ export const fallbackResumeAnalysis = (extractedText, targetRole) => {
   };
 };
 
+
 export const fallbackJobMatch = (userContext, jobDescriptionText) => {
   const text = (jobDescriptionText || '').toLowerCase();
-  
-  const matches = ['JavaScript', 'React', 'Node.js', 'REST APIs', 'Git', 'MongoDB'];
-  const missing = ['Kubernetes', 'GraphQL', 'AWS ECS', 'Microservices Architecture'];
+
+  // 1. Known technical skills and their aliases
+  const skillAliases = {
+    JavaScript: ['javascript', 'java script'],
+    TypeScript: ['typescript', 'type script'],
+    Python: ['python'],
+    Java: ['java'],
+    'C++': ['c++'],
+    React: ['react', 'react.js', 'reactjs'],
+    'Node.js': ['node.js', 'nodejs', 'node js'],
+    Express: ['express.js', 'expressjs', 'express'],
+    MongoDB: ['mongodb', 'mongo db'],
+    SQL: ['sql', 'mysql', 'postgresql', 'postgres'],
+    'REST APIs': ['rest api', 'rest apis', 'restful api', 'restful apis'],
+    GraphQL: ['graphql'],
+    Git: ['git', 'github'],
+    Docker: ['docker'],
+    Kubernetes: ['kubernetes', 'k8s'],
+    AWS: ['aws', 'amazon web services'],
+    Azure: ['azure'],
+    'Google Cloud': ['google cloud', 'gcp'],
+    Redis: ['redis'],
+    HTML: ['html'],
+    CSS: ['css'],
+    'Tailwind CSS': ['tailwind css', 'tailwind'],
+    Redux: ['redux'],
+    'Data Structures and Algorithms': ['data structures', 'algorithms', 'dsa'],
+    'System Design': ['system design'],
+    Microservices: ['microservices', 'microservice architecture'],
+    'CI/CD': ['ci/cd', 'continuous integration', 'continuous deployment']
+  };
+
+  // Avoid matching a short skill inside an unrelated word.
+  const containsTerm = (source, term) => {
+    const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const pattern = escaped.replace(/\s+/g, '\\s+');
+
+    return new RegExp(
+      `(^|[^a-z0-9+#])${pattern}(?=$|[^a-z0-9+#])`,
+      'i'
+    ).test(source);
+  };
+
+  // 2. Extract recognized skills required by the job.
+  const requiredSkills = Object.entries(skillAliases)
+    .filter(([, aliases]) =>
+      aliases.some(alias => containsTerm(text, alias))
+    )
+    .map(([skill]) => skill);
+
+  // 3. Read skills and project technologies from the user's profile.
+  const profileSkills = [
+    ...(Array.isArray(userContext?.skills)
+      ? userContext.skills.map(skill =>
+          typeof skill === 'string'
+            ? skill
+            : skill?.name || skill?.skill || ''
+        )
+      : []),
+
+    ...(Array.isArray(userContext?.projects)
+      ? userContext.projects.flatMap(project => {
+          const technologies = project?.techStack ?? project?.technologies ?? [];
+
+          if (Array.isArray(technologies)) {
+            return technologies.map(tech =>
+              typeof tech === 'string'
+                ? tech
+                : tech?.name || tech?.technology || ''
+            );
+          }
+
+          if (typeof technologies === 'string') {
+            return technologies.split(/[,|]/);
+          }
+
+          return [];
+        })
+      : [])
+  ].filter(Boolean);
+
+  const profileText = profileSkills.join(' ').toLowerCase();
+
+  // 4. Compare profile skills with job requirements.
+  const matchingSkills = requiredSkills.filter(skill => {
+    const aliases = skillAliases[skill];
+
+    return aliases.some(alias => containsTerm(profileText, alias)) ||
+      containsTerm(profileText, skill.toLowerCase());
+  });
+
+  const missingSkills = requiredSkills.filter(
+    skill => !matchingSkills.includes(skill)
+  );
+
+  // 5. Calculate score dynamically.
+  const matchScore = requiredSkills.length === 0
+    ? 0
+    : Math.round(
+        (matchingSkills.length / requiredSkills.length) * 100
+      );
+
+  // 6. Generate recommendations based on actual gaps.
+  const recommendations = missingSkills.length > 0
+    ? missingSkills.map(
+        skill => `Learn and practice ${skill} to improve your job match.`
+      )
+    : requiredSkills.length > 0
+      ? ['Review the job description and strengthen your existing skills with practical projects.']
+      : ['No recognized technical skills were detected in this job description. Review the requirements manually.'];
+
+  // 7. Infer a basic role label from the job description.
+  const jobTitle = /\b(ai|machine learning|deep learning)\b/i.test(text)
+    ? 'AI / Machine Learning Engineer'
+    : /\b(frontend|front-end|react developer|ui developer)\b/i.test(text)
+      ? 'Frontend Developer'
+      : /\b(backend|back-end|server-side)\b/i.test(text)
+        ? 'Backend Developer'
+        : /\b(full stack|full-stack|mern)\b/i.test(text)
+          ? 'Full Stack Developer'
+          : 'Software Developer';
 
   return {
-    jobTitle: text.includes('ai') ? 'AI Systems Engineer' : 'Full Stack Developer',
-    companyName: 'Target Enterprise',
-    matchScore: 82,
-    matchingSkills: matches,
-    partialMatches: ['TypeScript', 'System Design'],
-    missingSkills: missing,
-    experienceGaps: ['Requires 2+ years production cloud deployment experience'],
-    recommendations: [
-      'Highlight full-stack project deployment experience prominently on your resume',
-      'Brush up on System Design fundamentals, specifically database indexing and caching strategies',
-      'Build a quick microservice side project using Docker and Node.js'
-    ]
+    jobTitle,
+    companyName: 'Not specified',
+    matchScore,
+    matchingSkills,
+    partialMatches: [],
+    missingSkills,
+    experienceGaps: [],
+    recommendations
   };
 };
+
 
 export const fallbackRoadmap = (targetRole = 'Full Stack Developer') => {
   return {
