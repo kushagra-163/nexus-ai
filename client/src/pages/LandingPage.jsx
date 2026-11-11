@@ -1,21 +1,64 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Sparkles,
   ArrowRight,
-  BrainCircuit,
   FileText,
   Target,
   Bot,
+  HelpCircle,
+  ChevronDown,
+  Mail,
   CheckCircle2,
-  ChevronRight,
-  BarChart2,
-  ShieldCheck,
-  Zap,
-  MapPin
+  Send
 } from 'lucide-react';
 
+const faqs = [
+  {
+    question: 'How does Nexus AI calculate career readiness and ATS scores?',
+    answer: 'Nexus AI evaluates your technical proficiencies, portfolio projects, and resume structure against live industry job specifications. It generates an objective 0-100 readiness index highlighting exact strengths and missing skill requirements.',
+  },
+  {
+    question: 'Is my uploaded resume and personal profile data secure?',
+    answer: 'Yes, completely. Resumes uploaded to Nexus AI are processed securely. Your profile data is private to your account and never sold, shared with third parties, or used for unsolicited marketing.',
+  },
+  {
+    question: 'Can I export my learning roadmap and ATS audit reports?',
+    answer: 'Yes. You can export your step-by-step career milestone roadmaps to Markdown and download actionable resume ATS improvement checklists for offline study and mentor reviews.',
+  },
+  {
+    question: 'Which career tracks and technical domains are supported?',
+    answer: 'Nexus AI supports structured blueprints and India market salary benchmarks across Full Stack Development, AI/ML Engineering, Cloud & DevOps, Backend Architecture, Data Science, and Mobile Engineering.',
+  },
+  {
+    question: 'Is Nexus AI free for developers and students?',
+    answer: 'Yes! Core capabilities including skill gap analysis, resume ATS scanning, career blueprints, and learning roadmap generation are 100% free for individual developers and students.',
+  },
+];
+
 export const LandingPage = () => {
+  const [openFaq, setOpenFaq] = useState(null);
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [subscribed, setSubscribed] = useState(false);
+  const [emailError, setEmailError] = useState('');
+
+  const toggleFaq = (index) => {
+    setOpenFaq((prev) => (prev === index ? null : index));
+  };
+
+  const handleSubscribe = (e) => {
+    e.preventDefault();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!newsletterEmail || !emailRegex.test(newsletterEmail.trim())) {
+      setEmailError('Please enter a valid email address.');
+      return;
+    }
+    setEmailError('');
+    setSubscribed(true);
+    setNewsletterEmail('');
+    setTimeout(() => setSubscribed(false), 5000);
+  };
+
   return (
     <div className="space-y-24 py-12 md:py-20 px-6 max-w-7xl mx-auto">
       {/* HERO SECTION */}
@@ -155,6 +198,88 @@ export const LandingPage = () => {
             </p>
           </div>
         </div>
+      </section>
+
+      {/* FREQUENTLY ASKED QUESTIONS (FAQ) */}
+      <section id="faq" className="space-y-8 max-w-3xl mx-auto">
+        <div className="text-center space-y-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-nexus-500/10 border border-nexus-500/20 text-xs font-semibold text-nexus-300">
+            <HelpCircle className="w-3.5 h-3.5 text-nexus-400" />
+            <span>Got Questions?</span>
+          </div>
+          <h2 className="text-2xl md:text-3xl font-bold text-white">Frequently Asked Questions</h2>
+          <p className="text-xs sm:text-sm text-slate-400">Everything you need to know about Nexus AI career intelligence</p>
+        </div>
+
+        <div className="space-y-3">
+          {faqs.map((faq, idx) => {
+            const isOpen = openFaq === idx;
+            return (
+              <div
+                key={idx}
+                className="rounded-2xl border border-slate-800 bg-slate-900/60 backdrop-blur-sm overflow-hidden transition-all duration-200"
+              >
+                <button
+                  type="button"
+                  onClick={() => toggleFaq(idx)}
+                  className="w-full flex items-center justify-between p-5 text-left text-sm font-semibold text-white hover:text-nexus-300 transition-colors"
+                >
+                  <span>{faq.question}</span>
+                  <ChevronDown
+                    className={`w-4 h-4 text-slate-400 transition-transform duration-200 shrink-0 ml-4 ${
+                      isOpen ? 'transform rotate-180 text-nexus-400' : ''
+                    }`}
+                  />
+                </button>
+                {isOpen && (
+                  <div className="px-5 pb-5 pt-1 text-xs sm:text-sm text-slate-300 leading-relaxed border-t border-slate-800/60">
+                    {faq.answer}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* DEVELOPER NEWSLETTER & CAREER DIGEST */}
+      <section className="max-w-3xl mx-auto rounded-3xl border border-nexus-500/30 bg-gradient-to-b from-slate-900 to-nexus-950/40 p-8 sm:p-10 text-center space-y-5 shadow-xl">
+        <div className="w-12 h-12 rounded-2xl bg-nexus-600/20 border border-nexus-500/30 flex items-center justify-center text-nexus-400 mx-auto">
+          <Mail className="w-6 h-6" />
+        </div>
+        <div className="space-y-2">
+          <h3 className="text-xl sm:text-2xl font-bold text-white">Subscribe to Nexus Career Digest</h3>
+          <p className="text-xs sm:text-sm text-slate-300 max-w-lg mx-auto">
+            Get weekly tech hiring trends, high-demand skills, and actionable career insights delivered directly to your inbox.
+          </p>
+        </div>
+
+        {subscribed ? (
+          <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl text-xs sm:text-sm font-semibold text-emerald-300 flex items-center justify-center gap-2 animate-fade-in">
+            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+            <span>Thank you for subscribing! You will receive our weekly developer career digest.</span>
+          </div>
+        ) : (
+          <form onSubmit={handleSubscribe} className="space-y-3 max-w-md mx-auto">
+            <div className="flex flex-col sm:flex-row gap-2">
+              <input
+                type="email"
+                placeholder="Enter your developer email..."
+                value={newsletterEmail}
+                onChange={(e) => setNewsletterEmail(e.target.value)}
+                className="flex-1 px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-nexus-500 transition-colors"
+              />
+              <button
+                type="submit"
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-nexus-600 hover:bg-nexus-500 text-white font-semibold text-xs rounded-xl transition-all shadow-md active:scale-95 shrink-0"
+              >
+                <span>Subscribe</span>
+                <Send className="w-3.5 h-3.5" />
+              </button>
+            </div>
+            {emailError && <p className="text-xs text-rose-400 text-left pl-1">{emailError}</p>}
+          </form>
+        )}
       </section>
 
       {/* FINAL CTA */}
