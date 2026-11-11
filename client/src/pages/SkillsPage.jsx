@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Zap, Trash2, Edit2, Target, CheckCircle2, AlertCircle, ShieldAlert } from 'lucide-react';
+import { Plus, Zap, Trash2, Edit2, Target, CheckCircle2, ShieldAlert, Search, Filter } from 'lucide-react';
 import { PageHeader } from '../components/Topbar';
-import { Card, Badge, ProgressBar } from '../components/Card';
+import { Card, ProgressBar } from '../components/Card';
 import { Modal } from '../components/Modal';
 import { Input, Select } from '../components/Input';
 import { Button } from '../components/Button';
@@ -11,14 +11,23 @@ export const SkillsPage = () => {
   const [skills, setSkills] = useState([]);
   const [gapData, setGapData] = useState(null);
   const [targetRole, setTargetRole] = useState('AI Engineer');
-  const [loading, setLoading] = useState(true);
 
-  // Modal State
+  // Filter & Search State
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Add Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [skillName, setSkillName] = useState('');
   const [category, setCategory] = useState('Programming');
   const [proficiency, setProficiency] = useState('Intermediate');
   const [submitting, setSubmitting] = useState(false);
+
+  // Edit Modal State
+  const [editingSkill, setEditingSkill] = useState(null);
+  const [editName, setEditName] = useState('');
+  const [editCategory, setEditCategory] = useState('Programming');
+  const [editProficiency, setEditProficiency] = useState('Intermediate');
 
   useEffect(() => {
     fetchSkills();
@@ -36,8 +45,6 @@ export const SkillsPage = () => {
       }
     } catch (err) {
       console.error('Failed to fetch skills:', err.message);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -76,6 +83,36 @@ export const SkillsPage = () => {
     }
   };
 
+  const handleOpenEditModal = (skill) => {
+    setEditingSkill(skill);
+    setEditName(skill.name);
+    setEditCategory(skill.category || 'Programming');
+    setEditProficiency(skill.proficiency || 'Intermediate');
+  };
+
+  const handleUpdateSkill = async (e) => {
+    e.preventDefault();
+    if (!editName.trim() || !editingSkill) return;
+
+    setSubmitting(true);
+    try {
+      const res = await API.put(`/skills/${editingSkill._id}`, {
+        name: editName,
+        category: editCategory,
+        proficiency: editProficiency,
+      });
+      if (res.data.success) {
+        setSkills(skills.map((s) => (s._id === editingSkill._id ? res.data.data : s)));
+        setEditingSkill(null);
+        fetchGapAnalysis(targetRole);
+      }
+    } catch (err) {
+      console.error('Failed to update skill:', err.message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   const handleDeleteSkill = async (id) => {
     try {
       await API.delete(`/skills/${id}`);
@@ -87,6 +124,25 @@ export const SkillsPage = () => {
   };
 
   const categories = ['Programming', 'Frontend', 'Backend', 'Database', 'AI/ML', 'Tools', 'Soft Skills'];
+  const allFilterCategories = ['All', ...categories];
+
+  const filteredSkills = skills.filter((skill) => {
+    const matchesCategory = selectedCategory === 'All' || skill.category === selectedCategory;
+    const matchesSearch = !searchQuery.trim() || skill.name.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
+
+  const getProficiencyBadgeClass = (prof) => {
+    switch (prof) {
+      case 'Expert':
+      case 'Advanced':
+        return 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20';
+      case 'Intermediate':
+        return 'text-nexus-400 bg-nexus-500/10 border-nexus-500/20';
+      default:
+        return 'text-slate-400 bg-slate-800/40 border-slate-700/50';
+    }
+  };
 
   return (
     <div className="space-y-8">
@@ -122,7 +178,7 @@ export const SkillsPage = () => {
                 'Data Scientist',
                 'Backend Developer',
                 'Frontend Developer',
-                'Software Engineer'
+                'Software Engineer',
               ]}
             />
           </div>
@@ -146,7 +202,10 @@ export const SkillsPage = () => {
                 </span>
                 <div className="flex flex-wrap gap-1.5 pt-1">
                   {gapData.currentSkills?.map((s, idx) => (
-                    <span key={idx} className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-xs font-medium text-emerald-300">
+                    <span
+                      key={idx}
+                      className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-xs font-medium text-emerald-300"
+                    >
                       {s}
                     </span>
                   ))}
@@ -160,7 +219,10 @@ export const SkillsPage = () => {
                 </span>
                 <div className="flex flex-wrap gap-1.5 pt-1">
                   {gapData.missingSkills?.map((s, idx) => (
-                    <span key={idx} className="px-2 py-0.5 rounded bg-rose-500/10 border border-rose-500/20 text-xs font-medium text-rose-300">
+                    <span
+                      key={idx}
+                      className="px-2 py-0.5 rounded bg-rose-500/10 border border-rose-500/20 text-xs font-medium text-rose-300"
+                    >
                       + {s}
                     </span>
                   ))}
@@ -171,16 +233,54 @@ export const SkillsPage = () => {
         )}
       </Card>
 
+      {/* FILTER & SEARCH CONTROLS */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-900/50 p-4 rounded-2xl border border-slate-800">
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
+          <Filter className="w-4 h-4 text-slate-400 shrink-0" />
+          {allFilterCategories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              className={`px-3 py-1 rounded-xl text-xs font-medium transition-all shrink-0 ${
+                selectedCategory === cat
+                  ? 'bg-nexus-600 text-white shadow-md shadow-nexus-600/30'
+                  : 'bg-slate-800/60 text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+
+        <div className="relative w-full sm:w-64">
+          <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+          <input
+            type="text"
+            placeholder="Search skills..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-nexus-500"
+          />
+        </div>
+      </div>
+
       {/* SKILL MATRIX BY CATEGORY */}
       <div className="space-y-6">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Zap className="w-5 h-5 text-nexus-400" />
-          <span>Skill Inventory Matrix ({skills.length})</span>
-        </h3>
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-bold text-white flex items-center gap-2">
+            <Zap className="w-5 h-5 text-nexus-400" />
+            <span>
+              Skill Inventory Matrix ({filteredSkills.length} of {skills.length})
+            </span>
+          </h3>
+          {selectedCategory !== 'All' && (
+            <span className="text-xs text-nexus-400">Filtering: {selectedCategory}</span>
+          )}
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {categories.map((cat) => {
-            const categorySkills = skills.filter((s) => s.category === cat);
+          {(selectedCategory === 'All' ? categories : [selectedCategory]).map((cat) => {
+            const categorySkills = filteredSkills.filter((s) => s.category === cat);
             return (
               <Card key={cat} className="space-y-3">
                 <div className="flex items-center justify-between border-b border-slate-800 pb-2">
@@ -197,19 +297,34 @@ export const SkillsPage = () => {
                       >
                         <div>
                           <span className="text-xs font-semibold text-slate-200">{skill.name}</span>
-                          <span className="block text-[10px] text-slate-400">{skill.proficiency}</span>
+                          <span
+                            className={`inline-block ml-2 text-[10px] px-1.5 py-0.2 rounded border ${getProficiencyBadgeClass(
+                              skill.proficiency
+                            )}`}
+                          >
+                            {skill.proficiency}
+                          </span>
                         </div>
-                        <button
-                          onClick={() => handleDeleteSkill(skill._id)}
-                          className="p-1 text-slate-500 hover:text-rose-400 transition-colors"
-                          title="Remove Skill"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => handleOpenEditModal(skill)}
+                            className="p-1 text-slate-500 hover:text-nexus-400 transition-colors"
+                            title="Edit Skill"
+                          >
+                            <Edit2 className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteSkill(skill._id)}
+                            className="p-1 text-slate-500 hover:text-rose-400 transition-colors"
+                            title="Remove Skill"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       </div>
                     ))
                   ) : (
-                    <p className="text-xs text-slate-500 py-2">No skills added under {cat}.</p>
+                    <p className="text-xs text-slate-500 py-2">No skills found under {cat}.</p>
                   )}
                 </div>
               </Card>
@@ -240,7 +355,7 @@ export const SkillsPage = () => {
             label="Proficiency Level"
             value={proficiency}
             onChange={(e) => setProficiency(e.target.value)}
-            options={['Beginner', 'Intermediate', 'Advanced']}
+            options={['Beginner', 'Intermediate', 'Advanced', 'Expert']}
           />
 
           <div className="flex justify-end gap-3 pt-4 border-t border-slate-800">
@@ -249,6 +364,42 @@ export const SkillsPage = () => {
             </Button>
             <Button type="submit" variant="primary" loading={submitting}>
               Add Skill
+            </Button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* EDIT SKILL MODAL */}
+      <Modal isOpen={Boolean(editingSkill)} onClose={() => setEditingSkill(null)} title="Edit Skill Details">
+        <form onSubmit={handleUpdateSkill} className="space-y-4">
+          <Input
+            label="Skill Name"
+            placeholder="e.g. React, Node.js"
+            value={editName}
+            onChange={(e) => setEditName(e.target.value)}
+            required
+          />
+
+          <Select
+            label="Category"
+            value={editCategory}
+            onChange={(e) => setEditCategory(e.target.value)}
+            options={categories}
+          />
+
+          <Select
+            label="Proficiency Level"
+            value={editProficiency}
+            onChange={(e) => setEditProficiency(e.target.value)}
+            options={['Beginner', 'Intermediate', 'Advanced', 'Expert']}
+          />
+
+          <div className="flex justify-end gap-3 pt-4 border-t border-slate-800">
+            <Button variant="secondary" onClick={() => setEditingSkill(null)}>
+              Cancel
+            </Button>
+            <Button type="submit" variant="primary" loading={submitting}>
+              Save Changes
             </Button>
           </div>
         </form>
