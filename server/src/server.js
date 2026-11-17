@@ -5,6 +5,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { connectDB } from './config/db.js';
 import { errorHandler } from './middleware/error.middleware.js';
+import { getJwtSecret } from './config/jwt.js';
 import { securityHeaders } from './middleware/security.middleware.js';
 import { authRateLimiter, aiRateLimiter } from './middleware/rateLimit.middleware.js';
 
@@ -21,6 +22,9 @@ import chatRoutes from './routes/chat.routes.js';
 import analyticsRoutes from './routes/analytics.routes.js';
 
 dotenv.config();
+
+// Fail fast if the signing secret is missing
+getJwtSecret();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
