@@ -60,84 +60,84 @@ export const LandingPage = () => {
   };
 
   return (
-    <div className="space-y-24 py-12 md:py-20 px-6 max-w-7xl mx-auto">
+    <div className="space-y-24 py-12 md:py-20 px-4 sm:px-6 max-w-7xl mx-auto">
       {/* HERO SECTION */}
-      <section className="text-center space-y-8 max-w-4xl mx-auto pt-6">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-nexus-500/10 border border-nexus-500/20 text-xs font-semibold text-nexus-300">
-          <Sparkles className="w-3.5 h-3.5 text-nexus-400" />
+      <section className="text-center space-y-8 max-w-4xl mx-auto pt-4 sm:pt-6">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-nexus-500/10 border border-nexus-500/20 text-xs font-semibold text-nexus-600 dark:text-nexus-300 shadow-xs">
+          <Sparkles className="w-3.5 h-3.5 text-nexus-600 dark:text-nexus-400" />
           <span>Next-Generation Career Intelligence Engine</span>
         </div>
 
-        <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-white leading-tight">
+        <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
           Your Career. <br />
-          <span className="bg-gradient-to-r from-blue-300 via-indigo-400 to-purple-500 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-300 dark:via-indigo-400 dark:to-purple-500 bg-clip-text text-transparent">
             Connected by Intelligence.
           </span>
         </h1>
 
-        <p className="text-base md:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
+        <p className="text-base md:text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
           Nexus AI analyzes your skills, experience, projects, and goals against real-time industry demands to engineer your personalized career roadmap.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
           <Link
             to="/register"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-nexus-600 hover:bg-nexus-500 text-white font-semibold text-sm rounded-xl transition-all shadow-xl shadow-nexus-600/25 active:scale-95"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-nexus-600 hover:bg-nexus-500 text-white font-semibold text-sm rounded-xl transition-all shadow-xl shadow-nexus-600/25 active:scale-95 cursor-pointer"
           >
             <span>Get Started Free</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
           <a
             href="#capabilities"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 font-semibold text-sm rounded-xl transition-all"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-white hover:bg-slate-100 text-slate-800 border border-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 dark:text-slate-200 dark:border-slate-800 font-semibold text-sm rounded-xl transition-all shadow-xs"
           >
             <span>Explore Nexus Capabilities</span>
           </a>
         </div>
 
         {/* Hero Visual Banner Mockup */}
-        <div className="relative mt-12 rounded-3xl border border-slate-800/80 bg-slate-900/60 p-4 md:p-8 backdrop-blur-md shadow-2xl overflow-hidden">
-          <div className="absolute -top-24 -left-24 w-72 h-72 bg-nexus-600/10 rounded-full blur-3xl" />
-          <div className="absolute -bottom-24 -right-24 w-72 h-72 bg-purple-600/10 rounded-full blur-3xl" />
+        <div className="relative mt-12 rounded-3xl border border-slate-200/80 dark:border-slate-800/80 bg-white/70 dark:bg-slate-900/60 p-4 md:p-8 backdrop-blur-md shadow-xl dark:shadow-2xl overflow-hidden transition-colors duration-200">
+          <div className="absolute -top-24 -left-24 w-72 h-72 bg-nexus-600/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-24 -right-24 w-72 h-72 bg-purple-600/10 rounded-full blur-3xl pointer-events-none" />
 
           <div className="relative grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
-            <div className="bg-slate-950/80 border border-slate-800 p-5 rounded-2xl space-y-3">
+            <div className="bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl space-y-3 shadow-xs">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-slate-400">Career Readiness</span>
-                <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">+14% Growth</span>
+                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Career Readiness</span>
+                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">+14% Growth</span>
               </div>
-              <p className="text-3xl font-extrabold text-white">84 / 100</p>
-              <div className="w-full bg-slate-800 rounded-full h-2">
+              <p className="text-3xl font-extrabold text-slate-900 dark:text-white">84 / 100</p>
+              <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-2">
                 <div className="bg-nexus-500 h-2 rounded-full w-[84%]" />
               </div>
             </div>
 
-            <div className="bg-slate-950/80 border border-slate-800 p-5 rounded-2xl space-y-3">
+            <div className="bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl space-y-3 shadow-xs">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-slate-400">Resume ATS Score</span>
-                <span className="text-xs font-bold text-nexus-400 bg-nexus-500/10 px-2 py-0.5 rounded">Scanned</span>
+                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Resume ATS Score</span>
+                <span className="text-xs font-bold text-nexus-600 dark:text-nexus-400 bg-nexus-500/10 px-2 py-0.5 rounded">Scanned</span>
               </div>
-              <p className="text-3xl font-extrabold text-white">86 / 100</p>
-              <p className="text-xs text-slate-400">High ATS Match for AI & Full Stack Roles</p>
+              <p className="text-3xl font-extrabold text-slate-900 dark:text-white">86 / 100</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">High ATS Match for AI & Full Stack Roles</p>
             </div>
 
-            <div className="bg-slate-950/80 border border-slate-800 p-5 rounded-2xl space-y-3">
+            <div className="bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl space-y-3 shadow-xs">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-slate-400">AI Job Match</span>
-                <span className="text-xs font-bold text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded">Live</span>
+                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">AI Job Match</span>
+                <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded">Live</span>
               </div>
-              <p className="text-3xl font-extrabold text-white">82% Match</p>
-              <p className="text-xs text-slate-400">Missing Docker & Microservices</p>
+              <p className="text-3xl font-extrabold text-slate-900 dark:text-white">82% Match</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Missing Docker & Microservices</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* HOW NEXUS WORKS */}
-      <section id="how-it-works" className="space-y-12 text-center">
+      <section id="how-it-works" className="space-y-12 text-center scroll-mt-24">
         <div className="space-y-3">
-          <h2 className="text-2xl md:text-4xl font-bold text-white">How Nexus AI Works</h2>
-          <p className="text-sm text-slate-400 max-w-xl mx-auto">
+          <h2 className="text-2xl md:text-4xl font-bold text-slate-900 dark:text-white">How Nexus AI Works</h2>
+          <p className="text-sm text-slate-600 dark:text-slate-400 max-w-xl mx-auto">
             A seamless four-tier intelligence workflow designed to accelerate your developer trajectory.
           </p>
         </div>
@@ -149,51 +149,51 @@ export const LandingPage = () => {
             { step: '03', title: 'Skill Gap Matrix', desc: 'Isolate exact missing requirements for top tech roles.' },
             { step: '04', title: 'Actionable Roadmap', desc: 'Follow personalized milestone phases to reach career readiness.' }
           ].map((item, idx) => (
-            <div key={idx} className="bg-slate-900/60 border border-slate-800 p-6 rounded-2xl space-y-3 relative">
-              <span className="text-3xl font-black text-nexus-500/30">{item.step}</span>
-              <h3 className="text-base font-bold text-slate-100">{item.title}</h3>
-              <p className="text-xs text-slate-400 leading-relaxed">{item.desc}</p>
+            <div key={idx} className="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl space-y-3 relative shadow-xs hover:border-nexus-500/30 transition-colors">
+              <span className="text-3xl font-black text-nexus-500/30 dark:text-nexus-500/30">{item.step}</span>
+              <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">{item.title}</h3>
+              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">{item.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* CORE CAPABILITIES */}
-      <section id="capabilities" className="space-y-12">
+      <section id="capabilities" className="space-y-12 scroll-mt-24">
         <div className="text-center space-y-3">
-          <h2 className="text-2xl md:text-4xl font-bold text-white">Core Capabilities</h2>
-          <p className="text-sm text-slate-400 max-w-xl mx-auto">
+          <h2 className="text-2xl md:text-4xl font-bold text-slate-900 dark:text-white">Core Capabilities</h2>
+          <p className="text-sm text-slate-600 dark:text-slate-400 max-w-xl mx-auto">
             Everything you need to analyze, optimize, and present your developer portfolio.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-slate-900/60 border border-slate-800/80 p-6 rounded-2xl space-y-4 hover:border-nexus-500/40 transition-colors">
-            <div className="w-10 h-10 rounded-xl bg-nexus-600/20 text-nexus-400 flex items-center justify-center">
+          <div className="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 p-6 rounded-2xl space-y-4 hover:border-nexus-500/50 dark:hover:border-nexus-500/40 transition-all shadow-xs">
+            <div className="w-10 h-10 rounded-xl bg-nexus-600/10 dark:bg-nexus-600/20 text-nexus-600 dark:text-nexus-400 flex items-center justify-center">
               <FileText className="w-5 h-5" />
             </div>
-            <h3 className="text-lg font-bold text-white">Resume Intelligence</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white">Resume Intelligence</h3>
+            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
               Upload your PDF resume to extract key skills, receive visual 0-100 ATS compatibility scores, and discover missing keywords.
             </p>
           </div>
 
-          <div className="bg-slate-900/60 border border-slate-800/80 p-6 rounded-2xl space-y-4 hover:border-nexus-500/40 transition-colors">
-            <div className="w-10 h-10 rounded-xl bg-indigo-600/20 text-indigo-400 flex items-center justify-center">
+          <div className="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 p-6 rounded-2xl space-y-4 hover:border-nexus-500/50 dark:hover:border-nexus-500/40 transition-all shadow-xs">
+            <div className="w-10 h-10 rounded-xl bg-indigo-600/10 dark:bg-indigo-600/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
               <Target className="w-5 h-5" />
             </div>
-            <h3 className="text-lg font-bold text-white">Skill Gap Analysis</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white">Skill Gap Analysis</h3>
+            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
               Compare your current skill inventory directly against industry target roles like AI Engineer, Full Stack, and Data Scientist.
             </p>
           </div>
 
-          <div className="bg-slate-900/60 border border-slate-800/80 p-6 rounded-2xl space-y-4 hover:border-nexus-500/40 transition-colors">
-            <div className="w-10 h-10 rounded-xl bg-purple-600/20 text-purple-400 flex items-center justify-center">
+          <div className="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 p-6 rounded-2xl space-y-4 hover:border-nexus-500/50 dark:hover:border-nexus-500/40 transition-all shadow-xs">
+            <div className="w-10 h-10 rounded-xl bg-purple-600/10 dark:bg-purple-600/20 text-purple-600 dark:text-purple-400 flex items-center justify-center">
               <Bot className="w-5 h-5" />
             </div>
-            <h3 className="text-lg font-bold text-white">Context-Aware AI Assistant</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white">Context-Aware AI Assistant</h3>
+            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
               Chat with a personal AI career mentor that understands your live profile, projects, and learning history.
             </p>
           </div>
@@ -201,14 +201,14 @@ export const LandingPage = () => {
       </section>
 
       {/* FREQUENTLY ASKED QUESTIONS (FAQ) */}
-      <section id="faq" className="space-y-8 max-w-3xl mx-auto">
+      <section id="faq" className="space-y-8 max-w-3xl mx-auto scroll-mt-24">
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-nexus-500/10 border border-nexus-500/20 text-xs font-semibold text-nexus-300">
-            <HelpCircle className="w-3.5 h-3.5 text-nexus-400" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-nexus-500/10 border border-nexus-500/20 text-xs font-semibold text-nexus-600 dark:text-nexus-300">
+            <HelpCircle className="w-3.5 h-3.5 text-nexus-600 dark:text-nexus-400" />
             <span>Got Questions?</span>
           </div>
-          <h2 className="text-2xl md:text-3xl font-bold text-white">Frequently Asked Questions</h2>
-          <p className="text-xs sm:text-sm text-slate-400">Everything you need to know about Nexus AI career intelligence</p>
+          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">Frequently Asked Questions</h2>
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">Everything you need to know about Nexus AI career intelligence</p>
         </div>
 
         <div className="space-y-3">
@@ -217,22 +217,22 @@ export const LandingPage = () => {
             return (
               <div
                 key={idx}
-                className="rounded-2xl border border-slate-800 bg-slate-900/60 backdrop-blur-sm overflow-hidden transition-all duration-200"
+                className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 backdrop-blur-sm overflow-hidden transition-all duration-200 shadow-xs"
               >
                 <button
                   type="button"
                   onClick={() => toggleFaq(idx)}
-                  className="w-full flex items-center justify-between p-5 text-left text-sm font-semibold text-white hover:text-nexus-300 transition-colors"
+                  className="w-full flex items-center justify-between p-5 text-left text-sm font-semibold text-slate-900 dark:text-white hover:text-nexus-600 dark:hover:text-nexus-300 transition-colors cursor-pointer"
                 >
                   <span>{faq.question}</span>
                   <ChevronDown
                     className={`w-4 h-4 text-slate-400 transition-transform duration-200 shrink-0 ml-4 ${
-                      isOpen ? 'transform rotate-180 text-nexus-400' : ''
+                      isOpen ? 'transform rotate-180 text-nexus-600 dark:text-nexus-400' : ''
                     }`}
                   />
                 </button>
                 {isOpen && (
-                  <div className="px-5 pb-5 pt-1 text-xs sm:text-sm text-slate-300 leading-relaxed border-t border-slate-800/60">
+                  <div className="px-5 pb-5 pt-1 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed border-t border-slate-100 dark:border-slate-800/60">
                     {faq.answer}
                   </div>
                 )}
@@ -243,20 +243,20 @@ export const LandingPage = () => {
       </section>
 
       {/* DEVELOPER NEWSLETTER & CAREER DIGEST */}
-      <section className="max-w-3xl mx-auto rounded-3xl border border-nexus-500/30 bg-gradient-to-b from-slate-900 to-nexus-950/40 p-8 sm:p-10 text-center space-y-5 shadow-xl">
-        <div className="w-12 h-12 rounded-2xl bg-nexus-600/20 border border-nexus-500/30 flex items-center justify-center text-nexus-400 mx-auto">
+      <section className="max-w-3xl mx-auto rounded-3xl border border-nexus-500/30 bg-gradient-to-b from-indigo-50/60 via-white to-nexus-50/30 dark:from-slate-900 dark:to-nexus-950/40 p-8 sm:p-10 text-center space-y-5 shadow-xl transition-colors duration-200">
+        <div className="w-12 h-12 rounded-2xl bg-nexus-600/10 dark:bg-nexus-600/20 border border-nexus-500/30 flex items-center justify-center text-nexus-600 dark:text-nexus-400 mx-auto">
           <Mail className="w-6 h-6" />
         </div>
         <div className="space-y-2">
-          <h3 className="text-xl sm:text-2xl font-bold text-white">Subscribe to Nexus Career Digest</h3>
-          <p className="text-xs sm:text-sm text-slate-300 max-w-lg mx-auto">
+          <h3 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">Subscribe to Nexus Career Digest</h3>
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 max-w-lg mx-auto">
             Get weekly tech hiring trends, high-demand skills, and actionable career insights delivered directly to your inbox.
           </p>
         </div>
 
         {subscribed ? (
-          <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl text-xs sm:text-sm font-semibold text-emerald-300 flex items-center justify-center gap-2 animate-fade-in">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+          <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl text-xs sm:text-sm font-semibold text-emerald-700 dark:text-emerald-300 flex items-center justify-center gap-2 animate-fade-in">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
             <span>Thank you for subscribing! You will receive our weekly developer career digest.</span>
           </div>
         ) : (
@@ -267,33 +267,33 @@ export const LandingPage = () => {
                 placeholder="Enter your developer email..."
                 value={newsletterEmail}
                 onChange={(e) => setNewsletterEmail(e.target.value)}
-                className="flex-1 px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-nexus-500 transition-colors"
+                className="flex-1 px-4 py-2.5 bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-nexus-500 transition-colors"
               />
               <button
                 type="submit"
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-nexus-600 hover:bg-nexus-500 text-white font-semibold text-xs rounded-xl transition-all shadow-md active:scale-95 shrink-0"
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-nexus-600 hover:bg-nexus-500 text-white font-semibold text-xs rounded-xl transition-all shadow-md active:scale-95 shrink-0 cursor-pointer"
               >
                 <span>Subscribe</span>
                 <Send className="w-3.5 h-3.5" />
               </button>
             </div>
-            {emailError && <p className="text-xs text-rose-400 text-left pl-1">{emailError}</p>}
+            {emailError && <p className="text-xs text-rose-500 dark:text-rose-400 text-left pl-1">{emailError}</p>}
           </form>
         )}
       </section>
 
       {/* FINAL CTA */}
-      <section className="bg-gradient-to-r from-nexus-900/40 via-slate-900 to-indigo-950/40 border border-nexus-500/30 rounded-3xl p-10 md:p-14 text-center space-y-6">
-        <h2 className="text-3xl md:text-4xl font-extrabold text-white">
+      <section className="bg-gradient-to-r from-nexus-100/50 via-white to-indigo-100/50 dark:from-nexus-900/40 dark:via-slate-900 dark:to-indigo-950/40 border border-nexus-500/30 rounded-3xl p-10 md:p-14 text-center space-y-6 shadow-xl transition-colors duration-200">
+        <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white">
           Ready to Build Your Career Intelligence?
         </h2>
-        <p className="text-sm text-slate-300 max-w-lg mx-auto">
+        <p className="text-sm text-slate-600 dark:text-slate-300 max-w-lg mx-auto">
           Join thousands of developers utilizing Nexus AI to master high-value skills and land target software roles.
         </p>
         <div>
           <Link
             to="/register"
-            className="inline-flex items-center gap-2 px-8 py-3.5 bg-nexus-600 hover:bg-nexus-500 text-white font-semibold text-sm rounded-xl transition-all shadow-xl shadow-nexus-600/25 active:scale-95"
+            className="inline-flex items-center gap-2 px-8 py-3.5 bg-nexus-600 hover:bg-nexus-500 text-white font-semibold text-sm rounded-xl transition-all shadow-xl shadow-nexus-600/25 active:scale-95 cursor-pointer"
           >
             <span>Create Your Nexus Profile</span>
             <ArrowRight className="w-4 h-4" />

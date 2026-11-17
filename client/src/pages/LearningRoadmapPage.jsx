@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import {
-  MapPin,
+  Sparkles,
   CheckCircle2,
   Circle,
   Clock,
-  Sparkles,
-  Layers,
-  BookOpen,
   Download,
   Copy,
   Check,
@@ -19,8 +16,6 @@ import API from '../services/api';
 
 export const LearningRoadmapPage = () => {
   const [roadmap, setRoadmap] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [generating, setGenerating] = useState(false);
   const [copied, setCopied] = useState(false);
   const [statusFilter, setStatusFilter] = useState('All');
 
@@ -31,100 +26,81 @@ export const LearningRoadmapPage = () => {
   const fetchRoadmap = async () => {
     try {
       const res = await API.get('/roadmap');
-      if (res.data.success) {
+      if (res.data.success && res.data.data) {
         setRoadmap(res.data.data);
       }
     } catch (err) {
       console.error('Failed to fetch roadmap:', err.message);
-    } finally {
-      setLoading(false);
     }
   };
 
   const handleGenerate = async () => {
-    setGenerating(true);
     try {
-      const res = await API.post('/roadmap/generate', {
-        targetRole: roadmap?.targetRole || 'Full Stack Developer',
-        weeklyHours: 12,
-      });
+      const res = await API.post('/roadmap/generate');
       if (res.data.success) {
         setRoadmap(res.data.data);
       }
     } catch (err) {
       console.error('Failed to generate roadmap:', err.message);
-    } finally {
-      setGenerating(false);
     }
   };
 
   const handleToggleItem = async (phaseIndex, itemIndex, currentStatus) => {
-    const nextStatusMap = {
-      'Not Started': 'In Progress',
-      'In Progress': 'Completed',
-      'Completed': 'Not Started',
-    };
-    const nextStatus = nextStatusMap[currentStatus] || 'Completed';
-
+    const newStatus = currentStatus === 'Completed' ? 'In Progress' : 'Completed';
     try {
-      const res = await API.patch('/roadmap/status', {
+      const res = await API.patch('/roadmap/item', {
         phaseIndex,
         itemIndex,
-        status: nextStatus,
+        status: newStatus,
       });
       if (res.data.success) {
         setRoadmap(res.data.data);
       }
     } catch (err) {
-      console.error('Failed to update item status:', err.message);
+      console.error('Failed to update roadmap item:', err.message);
     }
   };
 
   const calculateProgress = () => {
-    if (!roadmap || !roadmap.totalMilestones) return 0;
-    return Math.round((roadmap.completedMilestones / roadmap.totalMilestones) * 100);
+    if (!roadmap?.phases) return 0;
+    let total = 0;
+    let completed = 0;
+    roadmap.phases.forEach((p) => {
+      p.items?.forEach((i) => {
+        total++;
+        if (i.status === 'Completed') completed++;
+      });
+    });
+    return total > 0 ? Math.round((completed / total) * 100) : 0;
   };
 
-  const generateRoadmapMarkdown = () => {
+  const generateMarkdown = () => {
     if (!roadmap) return '';
-    let md = `# Learning Roadmap: ${roadmap.targetRole || 'Developer'}\n\n`;
-    md += `- **Overall Progress**: ${roadmap.completedMilestones || 0} / ${roadmap.totalMilestones || 0} milestones completed (${calculateProgress()}%)\n`;
-    md += `- **Generated On**: ${new Date().toLocaleDateString()}\n\n`;
+    let md = `# Nexus AI Learning Roadmap — ${roadmap.targetRole}\n\n`;
+    md += `Progress: ${calculateProgress()}% Completed\n\n`;
 
-    if (roadmap.phases && roadmap.phases.length > 0) {
-      roadmap.phases.forEach((phase) => {
-        md += `## Phase ${phase.phaseNumber}: ${phase.phaseTitle} [${phase.status || 'Not Started'}]\n`;
-        if (phase.description) {
-          md += `> ${phase.description}\n\n`;
+    roadmap.phases?.forEach((phase) => {
+      md += `## Phase ${phase.phaseNumber}: ${phase.phaseTitle}\n`;
+      md += `${phase.description}\n\n`;
+      phase.items?.forEach((item) => {
+        const check = item.status === 'Completed' ? '[x]' : '[ ]';
+        md += `- ${check} **${item.title}** (${item.category})\n`;
+        if (item.resources && item.resources.length > 0) {
+          md += `  - Resources: ${item.resources.join(', ')}\n`;
         }
-        if (phase.items && phase.items.length > 0) {
-          phase.items.forEach((item) => {
-            const check =
-              item.status === 'Completed' ? '[x]' : item.status === 'In Progress' ? '[-]' : '[ ]';
-            md += `- ${check} **${item.title}** (${item.category || 'General'}) - *${
-              item.status || 'Not Started'
-            }*\n`;
-            if (item.resources && item.resources.length > 0) {
-              md += `  - Resources: ${item.resources.join(', ')}\n`;
-            }
-          });
-        }
-        md += '\n';
       });
-    }
+      md += '\n';
+    });
     return md;
   };
 
   const handleExportMarkdown = () => {
-    const md = generateRoadmapMarkdown();
+    const md = generateMarkdown();
     const blob = new Blob([md], { type: 'text/markdown;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    const cleanRole = (roadmap?.targetRole || 'learning-roadmap')
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-');
-    link.download = `${cleanRole}-roadmap.md`;
+    link.download = `nexus-learning-roadmap-${roadmap?.targetRole?.toLowerCase().replace(/\s+/g, '-') || 'plan'}.md`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -132,7 +108,7 @@ export const LearningRoadmapPage = () => {
   };
 
   const handleCopyMarkdown = async () => {
-    const md = generateRoadmapMarkdown();
+    const md = generateMarkdown();
     try {
       await navigator.clipboard.writeText(md);
       setCopied(true);
@@ -164,25 +140,25 @@ export const LearningRoadmapPage = () => {
 
       {/* OVERVIEW PROGRESS CARD */}
       {roadmap && (
-        <Card className="bg-gradient-to-r from-nexus-900/40 via-slate-900 to-slate-900 border-nexus-500/30 p-6 space-y-4">
+        <Card className="bg-gradient-to-r from-nexus-100/50 via-white to-slate-50 dark:from-nexus-900/40 dark:via-slate-900 dark:to-slate-900 border-nexus-500/30 p-6 space-y-4 shadow-xs dark:shadow-none">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-nexus-400">
+              <span className="text-xs font-bold uppercase tracking-wider text-nexus-600 dark:text-nexus-400">
                 Target Role Roadmap
               </span>
-              <h3 className="text-xl font-bold text-white">{roadmap.targetRole}</h3>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white">{roadmap.targetRole}</h3>
             </div>
             <div className="flex flex-wrap items-center gap-3">
-              <span className="text-xs font-semibold text-slate-400">
+              <span className="text-xs font-semibold text-slate-600 dark:text-slate-400">
                 Milestones:{' '}
-                <strong className="text-white">
+                <strong className="text-slate-900 dark:text-white">
                   {roadmap.completedMilestones} / {roadmap.totalMilestones}
                 </strong>
               </span>
               <Badge variant={calculateProgress() === 100 ? 'emerald' : 'indigo'}>
                 {calculateProgress()}% Completed
               </Badge>
-              <div className="flex items-center gap-2 pl-2 border-l border-slate-700">
+              <div className="flex items-center gap-2 pl-2 border-l border-slate-200 dark:border-slate-700">
                 <Button
                   variant="outline"
                   size="sm"
@@ -210,8 +186,8 @@ export const LearningRoadmapPage = () => {
 
       {/* FILTER CONTROLS */}
       {roadmap && (
-        <div className="flex flex-wrap items-center justify-between gap-4 bg-slate-900/60 p-4 rounded-2xl border border-slate-800">
-          <div className="flex items-center gap-1.5 text-xs text-slate-400 mr-2">
+        <div className="flex flex-wrap items-center justify-between gap-4 bg-white dark:bg-slate-900/60 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs dark:shadow-none">
+          <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 mr-2">
             <Filter className="w-3.5 h-3.5" />
             <span>Filter Milestones:</span>
           </div>
@@ -223,16 +199,16 @@ export const LearningRoadmapPage = () => {
                 <button
                   key={opt}
                   onClick={() => setStatusFilter(opt)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all flex items-center gap-1.5 ${
+                  className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all flex items-center gap-1.5 cursor-pointer ${
                     isSelected
-                      ? 'bg-nexus-500/20 text-nexus-400 border border-nexus-500/30 font-semibold shadow-sm'
-                      : 'bg-slate-800/40 text-slate-400 hover:text-slate-200 border border-slate-700/40'
+                      ? 'bg-nexus-500/20 text-nexus-700 dark:text-nexus-400 border border-nexus-500/40 font-semibold shadow-xs'
+                      : 'bg-slate-100 dark:bg-slate-800/40 text-slate-700 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 border border-slate-200 dark:border-slate-700/40'
                   }`}
                 >
                   <span>{opt}</span>
                   <span
                     className={`text-[10px] px-1.5 py-0.2 rounded-full ${
-                      isSelected ? 'bg-nexus-500/30 text-nexus-300' : 'bg-slate-700 text-slate-400'
+                      isSelected ? 'bg-nexus-500/30 text-nexus-800 dark:text-nexus-300' : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-400'
                     }`}
                   >
                     {count}
@@ -255,14 +231,14 @@ export const LearningRoadmapPage = () => {
 
           return (
             <Card key={pIdx} className="space-y-4 p-6">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-nexus-600/20 text-nexus-400 flex items-center justify-center font-bold text-xs">
+                  <div className="w-8 h-8 rounded-xl bg-nexus-600/10 dark:bg-nexus-600/20 text-nexus-600 dark:text-nexus-400 flex items-center justify-center font-bold text-xs shadow-xs">
                     P{phase.phaseNumber}
                   </div>
                   <div>
-                    <h4 className="text-base font-bold text-white">{phase.phaseTitle}</h4>
-                    <p className="text-xs text-slate-400">{phase.description}</p>
+                    <h4 className="text-base font-bold text-slate-900 dark:text-white">{phase.phaseTitle}</h4>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">{phase.description}</p>
                   </div>
                 </div>
                 <Badge
@@ -291,26 +267,26 @@ export const LearningRoadmapPage = () => {
                         onClick={() => handleToggleItem(pIdx, originalIndex, item.status)}
                         className={`flex items-center justify-between p-3.5 rounded-xl border transition-all cursor-pointer ${
                           isDone
-                            ? 'bg-emerald-500/5 border-emerald-500/20 text-slate-300'
+                            ? 'bg-emerald-500/10 border-emerald-500/20 text-slate-500'
                             : isInProgress
-                            ? 'bg-amber-500/5 border-amber-500/20 text-white'
-                            : 'bg-slate-950/60 border-slate-800/80 text-slate-300 hover:border-slate-700'
+                            ? 'bg-amber-500/10 border-amber-500/20 text-slate-900 dark:text-white'
+                            : 'bg-white dark:bg-slate-950/60 border-slate-200 dark:border-slate-800/80 text-slate-800 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-700 shadow-xs dark:shadow-none'
                         }`}
                       >
                         <div className="flex items-center gap-3">
-                          <button className="shrink-0" type="button">
+                          <button className="shrink-0 cursor-pointer" type="button">
                             {isDone ? (
-                              <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                              <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                             ) : isInProgress ? (
-                              <Clock className="w-5 h-5 text-amber-400" />
+                              <Clock className="w-5 h-5 text-amber-500 dark:text-amber-400" />
                             ) : (
-                              <Circle className="w-5 h-5 text-slate-500" />
+                              <Circle className="w-5 h-5 text-slate-400 dark:text-slate-500" />
                             )}
                           </button>
                           <div>
                             <span
                               className={`text-xs font-semibold ${
-                                isDone ? 'line-through text-slate-500' : 'text-slate-100'
+                                isDone ? 'line-through text-slate-400 dark:text-slate-500' : 'text-slate-900 dark:text-slate-100'
                               }`}
                             >
                               {item.title}
@@ -325,7 +301,7 @@ export const LearningRoadmapPage = () => {
                         <Badge
                           variant={
                             item.category === 'Project'
-                              ? 'purple'
+                              ? 'indigo'
                               : item.category === 'Concept'
                               ? 'blue'
                               : 'slate'

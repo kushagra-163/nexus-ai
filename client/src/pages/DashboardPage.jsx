@@ -2,18 +2,21 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Sparkles,
+  Bot,
   Award,
   Zap,
-  FileText,
-  CheckCircle2,
-  ArrowRight,
-  TrendingUp,
-  Bot,
   Target,
-  FolderGit2,
   Clock,
-  Compass
+  ArrowRight,
+  Compass,
+  FolderGit2,
+  FileText,
 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import API from '../services/api';
+import { Card, Skeleton } from '../components/Card';
+import { StatCard } from '../components/Topbar';
+import { Button } from '../components/Button';
 import {
   BarChart,
   Bar,
@@ -21,14 +24,8 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
-  Cell
+  Cell,
 } from 'recharts';
-import { PageHeader, StatCard } from '../components/Topbar';
-import { Card } from '../components/Card';
-import { Button } from '../components/Button';
-import { Skeleton } from '../components/Card';
-import { useAuth } from '../context/AuthContext';
-import API from '../services/api';
 
 export const DashboardPage = () => {
   const { user } = useAuth();
@@ -38,45 +35,45 @@ export const DashboardPage = () => {
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
-        const res = await API.get('/analytics/dashboard-summary');
+        const res = await API.get('/analytics/dashboard');
         if (res.data.success) {
           setData(res.data.data);
         }
       } catch (err) {
-        console.error('Failed to load dashboard summary:', err.message);
+        console.error('Dashboard fetch error:', err.response?.data?.message || err.message);
       } finally {
         setLoading(false);
       }
     };
-
     fetchDashboard();
   }, []);
 
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return 'Good morning';
-    if (hour < 18) return 'Good afternoon';
-    return 'Good evening';
+    if (hour < 12) return 'Good Morning';
+    if (hour < 18) return 'Good Afternoon';
+    return 'Good Evening';
   };
 
-  const chartColors = ['#6366f1', '#818cf8', '#a5b4fc', '#38bdf8', '#4ade80', '#fbbf24'];
+  const chartColors = ['#6366f1', '#8b5cf6', '#ec4899', '#3b82f6', '#10b981'];
 
   return (
     <div className="space-y-8">
       {/* WELCOME BANNER */}
-      <div className="relative rounded-3xl bg-gradient-to-r from-nexus-900/60 via-slate-900 to-slate-900 border border-nexus-500/30 p-6 sm:p-8 overflow-hidden shadow-2xl">
-        <div className="absolute top-0 right-0 w-80 h-80 bg-nexus-500/10 rounded-full blur-3xl" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="relative rounded-3xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/40 p-6 sm:p-8 backdrop-blur-md overflow-hidden shadow-xs dark:shadow-none">
+        <div className="absolute top-0 right-0 -mt-12 -mr-12 w-64 h-64 bg-nexus-600/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-nexus-500/10 border border-nexus-500/20 text-xs font-semibold text-nexus-300">
-              <Sparkles className="w-3.5 h-3.5 text-nexus-400" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-nexus-500/10 border border-nexus-500/20 text-xs font-semibold text-nexus-600 dark:text-nexus-300">
+              <Sparkles className="w-3.5 h-3.5 text-nexus-600 dark:text-nexus-400" />
               <span>Live Nexus Intelligence Feed</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-white">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
               {getGreeting()}, {user?.name || 'Developer'}.
             </h1>
-            <p className="text-sm text-slate-300">
-              Here is your latest career readiness analysis for target role <strong className="text-white">{data?.targetRole || 'AI & Full Stack Engineer'}</strong>.
+            <p className="text-sm text-slate-600 dark:text-slate-300">
+              Here is your latest career readiness analysis for target role <strong className="text-slate-900 dark:text-white">{data?.targetRole || 'AI & Full Stack Engineer'}</strong>.
             </p>
           </div>
 
@@ -106,48 +103,47 @@ export const DashboardPage = () => {
               value={`${data?.metrics?.readinessScore || 84}/100`}
               change="+14%"
               icon={Award}
-              color="text-nexus-400"
+              color="text-nexus-600 dark:text-nexus-400"
               progress={data?.metrics?.readinessScore || 84}
             />
             <StatCard
-              title="Skill Strength Index"
-              value={`${data?.metrics?.skillStrength || 78}/100`}
-              change="+8%"
+              title="Skills Profile"
+              value={`${data?.metrics?.totalSkills || 12} Verified`}
+              change="Top 15%"
               icon={Zap}
-              color="text-indigo-400"
-              progress={data?.metrics?.skillStrength || 78}
+              color="text-indigo-600 dark:text-indigo-400"
             />
             <StatCard
               title="Resume ATS Score"
               value={`${data?.metrics?.resumeScore || 86}/100`}
               change="Scanned"
               icon={FileText}
-              color="text-emerald-400"
+              color="text-emerald-600 dark:text-emerald-400"
               progress={data?.metrics?.resumeScore || 86}
             />
             <StatCard
-              title="Profile Completeness"
-              value={`${data?.metrics?.profileCompleteness || 95}%`}
-              change="Complete"
-              icon={CheckCircle2}
-              color="text-purple-400"
-              progress={data?.metrics?.profileCompleteness || 95}
+              title="Target Match Index"
+              value="82%"
+              change="Live"
+              icon={Target}
+              color="text-purple-600 dark:text-purple-400"
+              progress={82}
             />
           </>
         )}
       </div>
 
       {/* PROMINENT AI RECOMMENDATION CARD */}
-      <Card className="border-nexus-500/30 bg-nexus-950/20 relative overflow-hidden">
+      <Card className="border-nexus-500/30 bg-nexus-50/50 dark:bg-nexus-950/20 relative overflow-hidden">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-nexus-600/20 border border-nexus-500/40 flex items-center justify-center text-nexus-400 shrink-0 mt-1">
+            <div className="w-12 h-12 rounded-2xl bg-nexus-600/10 dark:bg-nexus-600/20 border border-nexus-500/30 dark:border-nexus-500/40 flex items-center justify-center text-nexus-600 dark:text-nexus-400 shrink-0 mt-1 shadow-xs">
               <Sparkles className="w-6 h-6" />
             </div>
             <div className="space-y-1">
-              <span className="text-xs font-bold uppercase tracking-wider text-nexus-400">Your Strongest Next Step</span>
-              <h3 className="text-lg font-bold text-white">{data?.aiRecommendation?.title || 'Strengthen System Design & Containerization'}</h3>
-              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-2xl">
+              <span className="text-xs font-bold uppercase tracking-wider text-nexus-600 dark:text-nexus-400">Your Strongest Next Step</span>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">{data?.aiRecommendation?.title || 'Strengthen System Design & Containerization'}</h3>
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl">
                 {data?.aiRecommendation?.description || 'Mastering Docker containerization and Redis caching will boost your profile readiness for target full-stack & AI roles by +14%.'}
               </p>
             </div>
@@ -166,10 +162,10 @@ export const DashboardPage = () => {
         <Card className="lg:col-span-2 space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-base font-bold text-white">Skill Distribution by Category</h3>
-              <p className="text-xs text-slate-400">Breakdown of current logged skills</p>
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">Skill Distribution by Category</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Breakdown of current logged skills</p>
             </div>
-            <Link to="/skills" className="text-xs font-semibold text-nexus-400 hover:underline">
+            <Link to="/skills" className="text-xs font-semibold text-nexus-600 dark:text-nexus-400 hover:underline">
               Manage Skills →
             </Link>
           </div>
@@ -183,7 +179,7 @@ export const DashboardPage = () => {
                   <XAxis dataKey="category" stroke="#64748b" fontSize={11} tickLine={false} />
                   <YAxis stroke="#64748b" fontSize={11} tickLine={false} allowDecimals={false} />
                   <Tooltip
-                    contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '12px', fontSize: '12px' }}
+                    contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '12px', fontSize: '12px', color: '#fff' }}
                     itemStyle={{ color: '#818cf8' }}
                   />
                   <Bar dataKey="count" radius={[8, 8, 0, 0]}>
@@ -203,9 +199,9 @@ export const DashboardPage = () => {
 
         {/* RECENT ACTIVITY TIMELINE */}
         <Card className="space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-            <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <Clock className="w-4 h-4 text-nexus-400" />
+          <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+            <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <Clock className="w-4 h-4 text-nexus-600 dark:text-nexus-400" />
               <span>Recent Activity</span>
             </h3>
           </div>
@@ -222,9 +218,9 @@ export const DashboardPage = () => {
                 <div key={act._id} className="flex items-start gap-3 text-xs">
                   <div className="w-2 h-2 rounded-full bg-nexus-500 mt-1.5 shrink-0" />
                   <div className="space-y-0.5 flex-1">
-                    <p className="font-semibold text-slate-200">{act.title}</p>
-                    <p className="text-slate-400">{act.description}</p>
-                    <span className="text-[10px] text-slate-500">
+                    <p className="font-semibold text-slate-800 dark:text-slate-200">{act.title}</p>
+                    <p className="text-slate-500 dark:text-slate-400">{act.description}</p>
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500">
                       {new Date(act.createdAt).toLocaleDateString()}
                     </span>
                   </div>
@@ -240,21 +236,21 @@ export const DashboardPage = () => {
       {/* QUICK ACTIONS SHORTCUT GRID */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { label: 'Resume ATS Audit', icon: FileText, path: '/resume', color: 'text-emerald-400' },
-          { label: 'AI Skill Gap Check', icon: Target, path: '/skills', color: 'text-indigo-400' },
-          { label: 'Job Description Matcher', icon: Compass, path: '/job-match', color: 'text-purple-400' },
-          { label: 'Portfolio Audit', icon: FolderGit2, path: '/projects', color: 'text-amber-400' },
+          { label: 'Resume ATS Audit', icon: FileText, path: '/resume', color: 'text-emerald-600 dark:text-emerald-400' },
+          { label: 'AI Skill Gap Check', icon: Target, path: '/skills', color: 'text-indigo-600 dark:text-indigo-400' },
+          { label: 'Job Description Matcher', icon: Compass, path: '/job-match', color: 'text-purple-600 dark:text-purple-400' },
+          { label: 'Portfolio Audit', icon: FolderGit2, path: '/projects', color: 'text-amber-600 dark:text-amber-400' },
         ].map((item, idx) => {
           const Icon = item.icon;
           return (
             <Link key={idx} to={item.path}>
               <Card hover className="flex items-center gap-3 p-4">
-                <div className={`p-2.5 rounded-xl bg-slate-800 ${item.color}`}>
+                <div className={`p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 ${item.color}`}>
                   <Icon className="w-5 h-5" />
                 </div>
                 <div className="flex-1">
-                  <h4 className="text-xs font-bold text-slate-200">{item.label}</h4>
-                  <span className="text-[10px] text-slate-400">Launch Module →</span>
+                  <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200">{item.label}</h4>
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400">Launch Module →</span>
                 </div>
               </Card>
             </Link>

@@ -15,13 +15,13 @@ export const Button = ({
   onClick,
   ...props
 }) => {
-  const baseStyles = 'inline-flex items-center justify-center font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer select-none';
+  const baseStyles = 'inline-flex items-center justify-center font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-950 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer select-none';
 
   const variants = {
     primary: 'bg-nexus-600 hover:bg-nexus-500 text-white shadow-lg shadow-nexus-600/25 focus:ring-nexus-500 active:scale-[0.98]',
-    secondary: 'bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-700/60 focus:ring-slate-500 active:scale-[0.98]',
-    outline: 'bg-transparent border border-slate-700 hover:border-nexus-500 text-slate-300 hover:text-white focus:ring-nexus-500',
-    ghost: 'bg-transparent hover:bg-slate-800/60 text-slate-400 hover:text-slate-200 focus:ring-slate-500',
+    secondary: 'bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 shadow-xs dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-100 dark:border-slate-700/60 focus:ring-slate-400 dark:focus:ring-slate-500 active:scale-[0.98]',
+    outline: 'bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 hover:border-nexus-500 hover:text-nexus-600 shadow-xs dark:bg-transparent dark:border-slate-700 dark:hover:border-nexus-500 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800/40 focus:ring-nexus-500',
+    ghost: 'bg-transparent hover:bg-slate-100 text-slate-600 hover:text-slate-900 dark:hover:bg-slate-800/60 dark:text-slate-400 dark:hover:text-slate-200 focus:ring-slate-400 dark:focus:ring-slate-500',
     danger: 'bg-rose-600 hover:bg-rose-500 text-white shadow-lg shadow-rose-600/20 focus:ring-rose-500 active:scale-[0.98]',
   };
 

@@ -5,8 +5,8 @@ export const Card = ({ children, className = '', hover = true, ...props }) => {
   return (
     <div
       className={clsx(
-        'bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 md:p-6 backdrop-blur-sm transition-all duration-200',
-        hover && 'hover:border-slate-700/80 hover:bg-slate-900/80',
+        'bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 rounded-2xl p-5 md:p-6 backdrop-blur-sm transition-all duration-200 shadow-xs dark:shadow-none',
+        hover && 'hover:border-slate-300 dark:hover:border-slate-700/80 hover:bg-slate-50/60 dark:hover:bg-slate-900/80',
         className
       )}
       {...props}
@@ -18,12 +18,12 @@ export const Card = ({ children, className = '', hover = true, ...props }) => {
 
 export const Badge = ({ children, variant = 'indigo', className = '' }) => {
   const variants = {
-    indigo: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20',
-    emerald: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-    amber: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
-    rose: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
-    slate: 'bg-slate-800/80 text-slate-300 border-slate-700/50',
-    blue: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
+    indigo: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20',
+    emerald: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20',
+    amber: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20',
+    rose: 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20',
+    slate: 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800/80 dark:text-slate-300 dark:border-slate-700/50',
+    blue: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20',
   };
 
   return (
@@ -45,12 +45,12 @@ export const ProgressBar = ({ progress = 0, color = 'bg-nexus-500', height = 'h-
   return (
     <div className="w-full space-y-1">
       {showLabel && (
-        <div className="flex justify-between items-center text-xs text-slate-400 font-medium">
+        <div className="flex justify-between items-center text-xs text-slate-600 dark:text-slate-400 font-medium">
           <span>Completion Progress</span>
-          <span className="text-slate-200">{clamped}%</span>
+          <span className="text-slate-800 dark:text-slate-200">{clamped}%</span>
         </div>
       )}
-      <div className={`w-full bg-slate-800 rounded-full overflow-hidden ${height}`}>
+      <div className={`w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden ${height}`}>
         <div
           className={`${color} ${height} rounded-full transition-all duration-500 ease-out`}
           style={{ width: `${clamped}%` }}
@@ -61,5 +61,5 @@ export const ProgressBar = ({ progress = 0, color = 'bg-nexus-500', height = 'h-
 };
 
 export const Skeleton = ({ className = '' }) => {
-  return <div className={`animate-pulse bg-slate-800/80 rounded-xl ${className}`} />;
+  return <div className={`animate-pulse bg-slate-200 dark:bg-slate-800/80 rounded-xl ${className}`} />;
 };

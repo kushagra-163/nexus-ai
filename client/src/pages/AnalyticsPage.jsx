@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BarChart3, TrendingUp, Award, Zap, Target } from 'lucide-react';
+import { TrendingUp, Award, Zap, Target } from 'lucide-react';
 import {
   LineChart,
   Line,
@@ -13,6 +13,7 @@ import {
 } from 'recharts';
 import { PageHeader, StatCard } from '../components/Topbar';
 import { Card } from '../components/Card';
+import { useTheme } from '../context/ThemeContext';
 import API from '../services/api';
 
 const readinessTrendData = [
@@ -24,8 +25,16 @@ const readinessTrendData = [
 ];
 
 export const AnalyticsPage = () => {
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === 'dark';
+
   const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
+
+  const gridStroke = isDark ? '#1e293b' : '#e2e8f0';
+  const axisStroke = isDark ? '#64748b' : '#94a3b8';
+  const tooltipStyle = isDark
+    ? { backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '12px', fontSize: '12px', color: '#f8fafc' }
+    : { backgroundColor: '#ffffff', borderColor: '#e2e8f0', borderRadius: '12px', fontSize: '12px', color: '#0f172a', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' };
 
   useEffect(() => {
     fetchAnalytics();
@@ -39,8 +48,6 @@ export const AnalyticsPage = () => {
       }
     } catch (err) {
       console.error('Failed to fetch analytics data:', err.message);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -54,9 +61,9 @@ export const AnalyticsPage = () => {
       {/* METRIC HIGHLIGHT CARDS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         <StatCard title="Career Readiness Index" value={`${data?.metrics?.readinessScore || 84}/100`} change="+14%" icon={Award} />
-        <StatCard title="Skill Strength Rating" value={`${data?.metrics?.skillStrength || 78}/100`} change="+8%" icon={Zap} color="text-indigo-400" />
-        <StatCard title="Target Role Match" value="82%" change="High Match" icon={Target} color="text-emerald-400" />
-        <StatCard title="Milestone Completion" value={`${data?.metrics?.completedMilestones || 4} / ${data?.metrics?.totalMilestones || 12}`} change="33%" icon={TrendingUp} color="text-purple-400" />
+        <StatCard title="Skill Strength Rating" value={`${data?.metrics?.skillStrength || 78}/100`} change="+8%" icon={Zap} color="text-indigo-500 dark:text-indigo-400" />
+        <StatCard title="Target Role Match" value="82%" change="High Match" icon={Target} color="text-emerald-500 dark:text-emerald-400" />
+        <StatCard title="Milestone Completion" value={`${data?.metrics?.completedMilestones || 4} / ${data?.metrics?.totalMilestones || 12}`} change="33%" icon={TrendingUp} color="text-purple-500 dark:text-purple-400" />
       </div>
 
       {/* RECHARTS VISUALIZATIONS */}
@@ -64,16 +71,16 @@ export const AnalyticsPage = () => {
         {/* READINESS PROGRESSION LINE CHART */}
         <Card className="space-y-4">
           <div>
-            <h3 className="text-base font-bold text-white">Readiness Progression Trend</h3>
-            <p className="text-xs text-slate-400">Monthly evolution of career readiness index</p>
+            <h3 className="text-base font-bold text-slate-900 dark:text-white">Readiness Progression Trend</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Monthly evolution of career readiness index</p>
           </div>
           <div className="h-64 w-full pt-4">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={readinessTrendData} margin={{ top: 10, right: 20, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-                <XAxis dataKey="month" stroke="#64748b" fontSize={11} tickLine={false} />
-                <YAxis stroke="#64748b" fontSize={11} tickLine={false} domain={[40, 100]} />
-                <Tooltip contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '12px', fontSize: '12px' }} />
+                <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+                <XAxis dataKey="month" stroke={axisStroke} fontSize={11} tickLine={false} />
+                <YAxis stroke={axisStroke} fontSize={11} tickLine={false} domain={[40, 100]} />
+                <Tooltip contentStyle={tooltipStyle} />
                 <Line type="monotone" dataKey="readiness" stroke="#6366f1" strokeWidth={3} dot={{ r: 5, fill: '#6366f1' }} />
               </LineChart>
             </ResponsiveContainer>
@@ -83,22 +90,22 @@ export const AnalyticsPage = () => {
         {/* SKILL CATEGORY BREAKDOWN BAR CHART */}
         <Card className="space-y-4">
           <div>
-            <h3 className="text-base font-bold text-white">Skill Distribution by Domain</h3>
-            <p className="text-xs text-slate-400">Count of logged skills across categories</p>
+            <h3 className="text-base font-bold text-slate-900 dark:text-white">Skill Distribution by Domain</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Count of logged skills across categories</p>
           </div>
           <div className="h-64 w-full pt-4">
             {data?.skillDistribution && data.skillDistribution.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={data.skillDistribution} margin={{ top: 10, right: 20, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-                  <XAxis dataKey="category" stroke="#64748b" fontSize={11} tickLine={false} />
-                  <YAxis stroke="#64748b" fontSize={11} tickLine={false} allowDecimals={false} />
-                  <Tooltip contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '12px', fontSize: '12px' }} />
+                  <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+                  <XAxis dataKey="category" stroke={axisStroke} fontSize={11} tickLine={false} />
+                  <YAxis stroke={axisStroke} fontSize={11} tickLine={false} allowDecimals={false} />
+                  <Tooltip contentStyle={tooltipStyle} />
                   <Bar dataKey="count" fill="#818cf8" radius={[6, 6, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <div className="h-full flex items-center justify-center text-xs text-slate-500">
+              <div className="h-full flex items-center justify-center text-xs text-slate-400 dark:text-slate-500">
                 No skill distribution data available.
               </div>
             )}

@@ -46,7 +46,7 @@ export const LoginPage = () => {
     try {
       await login('demo@nexusai.com', 'Password123!');
       navigate('/dashboard');
-    } catch (err) {
+    } catch {
       setError('Demo login failed. Run "npm run seed" in server to seed demo credentials.');
     } finally {
       setLoading(false);
@@ -56,12 +56,12 @@ export const LoginPage = () => {
   return (
     <div className="space-y-6">
       <div className="text-center space-y-1">
-        <h3 className="text-xl font-bold text-white">Welcome Back</h3>
-        <p className="text-xs text-slate-400">Sign in to your Nexus AI workspace</p>
+        <h3 className="text-xl font-bold text-slate-900 dark:text-white">Welcome Back</h3>
+        <p className="text-xs text-slate-500 dark:text-slate-400">Sign in to your Nexus AI workspace</p>
       </div>
 
       {error && (
-        <div className="p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-xs text-rose-300">
+        <div className="p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-xs text-rose-600 dark:text-rose-300">
           {error}
         </div>
       )}
@@ -93,8 +93,12 @@ export const LoginPage = () => {
       </form>
 
       <div className="relative py-2">
-        <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-800" /></div>
-        <div className="relative flex justify-center text-xs uppercase"><span className="bg-slate-900 px-2 text-slate-500 font-semibold">Or</span></div>
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-slate-200 dark:border-slate-800" />
+        </div>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-white dark:bg-slate-900 px-2 text-slate-400 dark:text-slate-500 font-semibold">Or</span>
+        </div>
       </div>
 
       <Button
@@ -108,9 +112,9 @@ export const LoginPage = () => {
         Quick Sign In with Demo Account
       </Button>
 
-      <p className="text-center text-xs text-slate-400 pt-2">
+      <p className="text-center text-xs text-slate-500 dark:text-slate-400 pt-2">
         Don't have an account?{' '}
-        <Link to="/register" className="text-nexus-400 font-semibold hover:underline">
+        <Link to="/register" className="text-nexus-600 dark:text-nexus-400 font-semibold hover:underline">
           Create Account
         </Link>
       </p>
