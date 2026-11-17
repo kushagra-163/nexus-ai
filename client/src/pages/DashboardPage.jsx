@@ -27,11 +27,13 @@ import { PageHeader, StatCard } from '../components/Topbar';
 import { Card } from '../components/Card';
 import { Button } from '../components/Button';
 import { Skeleton } from '../components/Card';
+import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 import API from '../services/api';
 
 export const DashboardPage = () => {
   const { user } = useAuth();
+  const { isDark } = useTheme();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -180,11 +182,17 @@ export const DashboardPage = () => {
             ) : data?.skillDistribution && data.skillDistribution.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={data.skillDistribution} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <XAxis dataKey="category" stroke="#64748b" fontSize={11} tickLine={false} />
-                  <YAxis stroke="#64748b" fontSize={11} tickLine={false} allowDecimals={false} />
+                  <XAxis dataKey="category" stroke={isDark ? '#64748b' : '#475569'} fontSize={11} tickLine={false} />
+                  <YAxis stroke={isDark ? '#64748b' : '#475569'} fontSize={11} tickLine={false} allowDecimals={false} />
                   <Tooltip
-                    contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '12px', fontSize: '12px' }}
-                    itemStyle={{ color: '#818cf8' }}
+                    contentStyle={{
+                      backgroundColor: isDark ? '#0f172a' : '#ffffff',
+                      borderColor: isDark ? '#334155' : '#e2e8f0',
+                      color: isDark ? '#f1f5f9' : '#0f172a',
+                      borderRadius: '12px',
+                      fontSize: '12px',
+                    }}
+                    itemStyle={{ color: isDark ? '#818cf8' : '#4f46e5' }}
                   />
                   <Bar dataKey="count" radius={[8, 8, 0, 0]}>
                     {data.skillDistribution.map((entry, index) => (
