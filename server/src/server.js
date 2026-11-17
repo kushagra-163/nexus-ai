@@ -5,6 +5,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { connectDB } from './config/db.js';
 import { errorHandler } from './middleware/error.middleware.js';
+import { getTrustProxySetting } from './config/proxy.js';
 import { securityHeaders } from './middleware/security.middleware.js';
 import { authRateLimiter, aiRateLimiter } from './middleware/rateLimit.middleware.js';
 
@@ -26,6 +27,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+
+// Count clients by their real address when running behind a reverse proxy (set TRUST_PROXY to the hop count)
+app.set('trust proxy', getTrustProxySetting());
 
 // Security Headers
 app.use(securityHeaders);
