@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, Check, ArrowRight, ArrowLeft, GraduationCap, Briefcase, Zap, Compass, AlertCircle } from 'lucide-react';
+import { Sparkles, Check, ArrowRight, ArrowLeft, GraduationCap, Zap, Compass, AlertCircle } from 'lucide-react';
 import { Input, Select, Textarea } from '../components/Input';
 import { Button } from '../components/Button';
 import API from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import { ThemeToggle } from '../components/ThemeToggle';
 
 const availableSkillsList = [
   { name: 'JavaScript', category: 'Programming' },
@@ -96,17 +97,21 @@ export const OnboardingPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4 selection:bg-nexus-500 selection:text-white">
-      <div className="w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-10 shadow-2xl space-y-8">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col items-center justify-center p-4 selection:bg-nexus-500 selection:text-white transition-colors duration-200 relative">
+      <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
+        <ThemeToggle />
+      </div>
+
+      <div className="w-full max-w-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-10 shadow-xl dark:shadow-2xl space-y-8">
         {/* Header Step Indicator */}
-        <div className="flex items-center justify-between pb-6 border-b border-slate-800">
+        <div className="flex items-center justify-between pb-6 border-b border-slate-200 dark:border-slate-800">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-nexus-600/20 border border-nexus-500/30 flex items-center justify-center text-nexus-400">
+            <div className="w-10 h-10 rounded-2xl bg-nexus-600/10 dark:bg-nexus-600/20 border border-nexus-500/20 dark:border-nexus-500/30 flex items-center justify-center text-nexus-600 dark:text-nexus-400 shadow-xs">
               <Sparkles className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-white">Setup Your Nexus Profile</h2>
-              <p className="text-xs text-slate-400">Step {step} of 3 — Tailoring Your Intelligence Engine</p>
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white">Setup Your Nexus Profile</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Step {step} of 3 — Tailoring Your Intelligence Engine</p>
             </div>
           </div>
           <div className="flex items-center gap-1.5">
@@ -114,7 +119,7 @@ export const OnboardingPage = () => {
               <div
                 key={s}
                 className={`w-8 h-2 rounded-full transition-all ${
-                  s === step ? 'bg-nexus-500 w-10' : s < step ? 'bg-indigo-600/60' : 'bg-slate-800'
+                  s === step ? 'bg-nexus-500 w-10' : s < step ? 'bg-indigo-600/60' : 'bg-slate-200 dark:bg-slate-800'
                 }`}
               />
             ))}
@@ -122,8 +127,8 @@ export const OnboardingPage = () => {
         </div>
 
         {error && (
-          <div className="p-4 bg-rose-500/10 border border-rose-500/20 rounded-2xl text-xs font-semibold text-rose-300 flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+          <div className="p-4 bg-rose-500/10 border border-rose-500/20 rounded-2xl text-xs font-semibold text-rose-600 dark:text-rose-300 flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 text-rose-500 dark:text-rose-400 shrink-0" />
             <span>{error}</span>
           </div>
         )}
@@ -131,8 +136,8 @@ export const OnboardingPage = () => {
         {/* STEP 1: EDUCATION & BACKGROUND */}
         {step === 1 && (
           <div className="space-y-5 animate-fade-in">
-            <div className="flex items-center gap-2 text-sm font-semibold text-slate-200">
-              <GraduationCap className="w-4 h-4 text-nexus-400" />
+            <div className="flex items-center gap-2 text-sm font-semibold text-slate-800 dark:text-slate-200">
+              <GraduationCap className="w-4 h-4 text-nexus-600 dark:text-nexus-400" />
               <span>Education & Professional Background</span>
             </div>
 
@@ -183,8 +188,8 @@ export const OnboardingPage = () => {
         {/* STEP 2: TARGET ROLES & DOMAIN */}
         {step === 2 && (
           <div className="space-y-5 animate-fade-in">
-            <div className="flex items-center gap-2 text-sm font-semibold text-slate-200">
-              <Compass className="w-4 h-4 text-nexus-400" />
+            <div className="flex items-center gap-2 text-sm font-semibold text-slate-800 dark:text-slate-200">
+              <Compass className="w-4 h-4 text-nexus-600 dark:text-nexus-400" />
               <span>Select Target Roles & Career Domain</span>
             </div>
 
@@ -202,7 +207,7 @@ export const OnboardingPage = () => {
             />
 
             <div className="space-y-2">
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wide">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wide">
                 Target Roles (Select at least one)
               </label>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
@@ -213,14 +218,14 @@ export const OnboardingPage = () => {
                       key={role}
                       type="button"
                       onClick={() => toggleRole(role)}
-                      className={`px-3 py-2.5 rounded-xl text-xs font-medium border text-left flex items-center justify-between transition-all ${
+                      className={`px-3 py-2.5 rounded-xl text-xs font-medium border text-left flex items-center justify-between transition-all cursor-pointer ${
                         active
-                          ? 'bg-nexus-600/20 border-nexus-500 text-white shadow-sm'
-                          : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
+                          ? 'bg-nexus-50 dark:bg-nexus-600/20 border-nexus-500 text-nexus-700 dark:text-white shadow-xs'
+                          : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
                       }`}
                     >
                       <span>{role}</span>
-                      {active && <Check className="w-3.5 h-3.5 text-nexus-400 shrink-0" />}
+                      {active && <Check className="w-3.5 h-3.5 text-nexus-600 dark:text-nexus-400 shrink-0" />}
                     </button>
                   );
                 })}
@@ -241,11 +246,11 @@ export const OnboardingPage = () => {
         {step === 3 && (
           <div className="space-y-5 animate-fade-in">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-sm font-semibold text-slate-200">
-                <Zap className="w-4 h-4 text-nexus-400" />
+              <div className="flex items-center gap-2 text-sm font-semibold text-slate-800 dark:text-slate-200">
+                <Zap className="w-4 h-4 text-nexus-600 dark:text-nexus-400" />
                 <span>Select Your Current Skills Inventory</span>
               </div>
-              <span className="text-xs text-nexus-400 font-semibold">{selectedSkills.length} Selected</span>
+              <span className="text-xs text-nexus-600 dark:text-nexus-400 font-semibold">{selectedSkills.length} Selected</span>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-64 overflow-y-auto p-1">
@@ -256,17 +261,17 @@ export const OnboardingPage = () => {
                     key={skill.name}
                     type="button"
                     onClick={() => toggleSkill(skill.name)}
-                    className={`p-3 rounded-xl border text-left flex flex-col justify-between transition-all ${
+                    className={`p-3 rounded-xl border text-left flex flex-col justify-between transition-all cursor-pointer ${
                       active
-                        ? 'bg-nexus-600/20 border-nexus-500 text-white'
-                        : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
+                        ? 'bg-nexus-50 dark:bg-nexus-600/20 border-nexus-500 text-nexus-700 dark:text-white shadow-xs'
+                        : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
                     }`}
                   >
                     <div className="flex items-center justify-between w-full mb-1">
                       <span className="text-xs font-semibold">{skill.name}</span>
-                      {active && <Check className="w-3.5 h-3.5 text-nexus-400" />}
+                      {active && <Check className="w-3.5 h-3.5 text-nexus-600 dark:text-nexus-400" />}
                     </div>
-                    <span className="text-[10px] text-slate-500">{skill.category}</span>
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400">{skill.category}</span>
                   </button>
                 );
               })}
@@ -275,7 +280,7 @@ export const OnboardingPage = () => {
         )}
 
         {/* Footer Navigation Buttons */}
-        <div className="flex items-center justify-between pt-6 border-t border-slate-800">
+        <div className="flex items-center justify-between pt-6 border-t border-slate-200 dark:border-slate-800">
           {step > 1 ? (
             <Button variant="secondary" onClick={() => setStep(step - 1)} icon={ArrowLeft}>
               Previous

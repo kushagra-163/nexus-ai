@@ -44,12 +44,12 @@ export const RegisterPage = () => {
   return (
     <div className="space-y-6">
       <div className="text-center space-y-1">
-        <h3 className="text-xl font-bold text-white">Create Nexus Account</h3>
-        <p className="text-xs text-slate-400">Start building your AI career intelligence profile</p>
+        <h3 className="text-xl font-bold text-slate-900 dark:text-white">Create Nexus Account</h3>
+        <p className="text-xs text-slate-500 dark:text-slate-400">Start building your AI career intelligence profile</p>
       </div>
 
       {error && (
-        <div className="p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-xs text-rose-300">
+        <div className="p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-xs text-rose-600 dark:text-rose-300">
           {error}
         </div>
       )}
@@ -90,9 +90,9 @@ export const RegisterPage = () => {
         </Button>
       </form>
 
-      <p className="text-center text-xs text-slate-400 pt-2">
+      <p className="text-center text-xs text-slate-500 dark:text-slate-400 pt-2">
         Already have an account?{' '}
-        <Link to="/login" className="text-nexus-400 font-semibold hover:underline">
+        <Link to="/login" className="text-nexus-600 dark:text-nexus-400 font-semibold hover:underline">
           Sign In
         </Link>
       </p>

@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { ThemeToggle } from './ThemeToggle';
 
 const SEARCH_MODULES = [
   { title: 'Dashboard', path: '/dashboard', description: 'Overview, career metrics & readiness', category: 'Core' },
@@ -93,18 +94,18 @@ export const Topbar = ({ setMobileOpen }) => {
   };
 
   return (
-    <header className="sticky top-0 z-30 h-16 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/80 px-4 md:px-8 flex items-center justify-between">
+    <header className="sticky top-0 z-30 h-16 bg-white/90 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 px-4 md:px-8 flex items-center justify-between transition-colors">
       <div className="flex items-center gap-4">
         <button
           onClick={() => setMobileOpen(true)}
-          className="md:hidden p-2 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800"
+          className="md:hidden p-2 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-700 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800 shadow-xs cursor-pointer"
         >
           <Menu className="w-5 h-5" />
         </button>
 
         {/* GLOBAL QUICK SEARCH */}
         <div ref={searchRef} className="relative hidden sm:block w-64 md:w-80">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-slate-500" />
           <input
             type="text"
             placeholder="Search skills, career paths, tools..."
@@ -112,7 +113,7 @@ export const Topbar = ({ setMobileOpen }) => {
             onChange={(e) => setSearchQuery(e.target.value)}
             onFocus={() => setIsSearchFocused(true)}
             onKeyDown={handleSearchKeyDown}
-            className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-9 pr-8 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-nexus-500 transition-colors"
+            className="w-full bg-slate-100/90 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-xl pl-9 pr-8 py-1.5 text-xs text-slate-900 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-nexus-500 transition-colors"
           />
           {searchQuery && (
             <button
@@ -120,7 +121,7 @@ export const Topbar = ({ setMobileOpen }) => {
                 setSearchQuery('');
                 setIsSearchFocused(false);
               }}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 cursor-pointer"
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -128,8 +129,8 @@ export const Topbar = ({ setMobileOpen }) => {
 
           {/* Quick Search Dropdown Results */}
           {isSearchFocused && searchQuery.trim() && (
-            <div className="absolute left-0 mt-2 w-full bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-2 z-50 animate-fade-in max-h-80 overflow-y-auto">
-              <div className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider border-b border-slate-800 mb-1">
+            <div className="absolute left-0 mt-2 w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl p-2 z-50 animate-fade-in max-h-80 overflow-y-auto">
+              <div className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 dark:border-slate-800 mb-1">
                 Quick Results ({filteredModules.length})
               </div>
               {filteredModules.length > 0 ? (
@@ -137,22 +138,22 @@ export const Topbar = ({ setMobileOpen }) => {
                   <button
                     key={item.path}
                     onClick={() => handleSelectModule(item.path)}
-                    className="w-full flex items-center justify-between p-2.5 rounded-xl text-left hover:bg-slate-800/70 transition-colors group"
+                    className="w-full flex items-center justify-between p-2.5 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800/70 transition-colors group cursor-pointer"
                   >
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-semibold text-slate-200 group-hover:text-nexus-400">
+                        <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 group-hover:text-nexus-600 dark:group-hover:text-nexus-400">
                           {item.title}
                         </span>
-                        <span className="text-[10px] px-1.5 py-0.2 rounded bg-slate-800 text-slate-400 border border-slate-700/60">
+                        <span className="text-[10px] px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700/60">
                           {item.category}
                         </span>
                       </div>
-                      <p className="text-[11px] text-slate-400 mt-0.5 line-clamp-1">
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-1">
                         {item.description}
                       </p>
                     </div>
-                    <ChevronRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-nexus-400 shrink-0" />
+                    <ChevronRight className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 group-hover:text-nexus-600 dark:group-hover:text-nexus-400 shrink-0" />
                   </button>
                 ))
               ) : (
@@ -167,48 +168,51 @@ export const Topbar = ({ setMobileOpen }) => {
 
       <div className="flex items-center gap-3">
         {/* Readiness Badge */}
-        <div className="hidden lg:flex items-center gap-2 px-3 py-1 bg-nexus-600/10 border border-nexus-500/20 rounded-full text-xs text-nexus-300 font-medium">
-          <Sparkles className="w-3.5 h-3.5 text-nexus-400" />
+        <div className="hidden lg:flex items-center gap-2 px-3 py-1 bg-nexus-50 dark:bg-nexus-600/10 border border-nexus-200 dark:border-nexus-500/20 rounded-full text-xs text-nexus-700 dark:text-nexus-300 font-medium">
+          <Sparkles className="w-3.5 h-3.5 text-nexus-600 dark:text-nexus-400" />
           <span>
-            Readiness Score: <strong className="text-white">{profile?.readinessScore || 70}%</strong>
+            Readiness Score: <strong className="text-slate-900 dark:text-white">{profile?.readinessScore || 70}%</strong>
           </span>
         </div>
+
+        {/* Theme Toggle */}
+        <ThemeToggle />
 
         {/* Notifications Dropdown */}
         <div ref={notificationsRef} className="relative">
           <button
             onClick={() => setShowNotifications(!showNotifications)}
-            className="p-2 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-slate-800/80 transition-colors relative"
+            className="p-2 rounded-xl border border-slate-200 dark:border-slate-800/80 bg-white/90 dark:bg-slate-900/80 text-slate-700 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800/80 shadow-xs transition-colors relative cursor-pointer"
           >
             <Bell className="w-5 h-5" />
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-nexus-500 ring-2 ring-slate-950" />
+            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-nexus-500 ring-2 ring-white dark:ring-slate-950" />
           </button>
 
           {showNotifications && (
-            <div className="absolute right-0 mt-2 w-80 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-4 z-50 animate-fade-in">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-                <h4 className="text-xs font-bold text-slate-200 tracking-wide uppercase">
+            <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl p-4 z-50 animate-fade-in">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
+                <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200 tracking-wide uppercase">
                   Nexus Intelligence Notifications
                 </h4>
-                <span className="text-[10px] text-nexus-400 bg-nexus-500/10 px-2 py-0.5 rounded">
+                <span className="text-[10px] text-nexus-600 dark:text-nexus-400 bg-nexus-500/10 px-2 py-0.5 rounded">
                   Live
                 </span>
               </div>
               <div className="py-2 space-y-2.5">
-                <div className="flex items-start gap-2.5 text-xs text-slate-300">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                <div className="flex items-start gap-2.5 text-xs text-slate-600 dark:text-slate-300">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 dark:text-emerald-400 shrink-0 mt-0.5" />
                   <div>
-                    <p className="font-semibold text-slate-200">Resume ATS Scan Active</p>
-                    <p className="text-[11px] text-slate-400">
+                    <p className="font-semibold text-slate-800 dark:text-slate-200">Resume ATS Scan Active</p>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400">
                       Target role keywords matched for Software Engineering.
                     </p>
                   </div>
                 </div>
-                <div className="flex items-start gap-2.5 text-xs text-slate-300">
-                  <Sparkles className="w-4 h-4 text-nexus-400 shrink-0 mt-0.5" />
+                <div className="flex items-start gap-2.5 text-xs text-slate-600 dark:text-slate-300">
+                  <Sparkles className="w-4 h-4 text-nexus-600 dark:text-nexus-400 shrink-0 mt-0.5" />
                   <div>
-                    <p className="font-semibold text-slate-200">New AI Recommendation</p>
-                    <p className="text-[11px] text-slate-400">
+                    <p className="font-semibold text-slate-800 dark:text-slate-200">New AI Recommendation</p>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400">
                       Learn Docker containerization to boost readiness score +14%.
                     </p>
                   </div>
@@ -222,23 +226,23 @@ export const Topbar = ({ setMobileOpen }) => {
         <div ref={profileRef} className="relative">
           <button
             onClick={() => setShowProfileMenu(!showProfileMenu)}
-            className="flex items-center gap-2.5 pl-2 pr-2 py-1 rounded-xl hover:bg-slate-900 border border-transparent hover:border-slate-800 transition-colors"
+            className="flex items-center gap-2.5 pl-2 pr-2 py-1 rounded-xl border border-slate-200 dark:border-slate-800/80 bg-white/90 dark:bg-slate-900/80 hover:bg-slate-100 dark:hover:bg-slate-800/80 shadow-xs transition-colors cursor-pointer"
           >
-            <div className="w-8 h-8 rounded-full bg-nexus-600/30 border border-nexus-500/40 flex items-center justify-center font-bold text-xs text-nexus-300">
+            <div className="w-8 h-8 rounded-full bg-nexus-600/20 dark:bg-nexus-600/30 border border-nexus-500/30 dark:border-nexus-500/40 flex items-center justify-center font-bold text-xs text-nexus-600 dark:text-nexus-300">
               {user?.name ? user.name.charAt(0).toUpperCase() : 'N'}
             </div>
-            <span className="hidden sm:inline-block text-xs font-medium text-slate-200">
+            <span className="hidden sm:inline-block text-xs font-semibold text-slate-800 dark:text-slate-200">
               {user?.name || 'Account'}
             </span>
           </button>
 
           {showProfileMenu && (
-            <div className="absolute right-0 mt-2 w-64 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-3 z-50 animate-fade-in space-y-2">
-              <div className="p-2 border-b border-slate-800">
-                <p className="text-xs font-bold text-white truncate">{user?.name || 'Developer'}</p>
-                <p className="text-[11px] text-slate-400 truncate">{user?.email || 'user@example.com'}</p>
+            <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl p-3 z-50 animate-fade-in space-y-2">
+              <div className="p-2 border-b border-slate-200 dark:border-slate-800">
+                <p className="text-xs font-bold text-slate-900 dark:text-white truncate">{user?.name || 'Developer'}</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">{user?.email || 'user@example.com'}</p>
                 {profile?.targetRole && (
-                  <span className="inline-block mt-1.5 text-[10px] font-medium px-2 py-0.5 rounded bg-nexus-500/10 text-nexus-300 border border-nexus-500/20">
+                  <span className="inline-block mt-1.5 text-[10px] font-medium px-2 py-0.5 rounded bg-nexus-500/10 text-nexus-600 dark:text-nexus-300 border border-nexus-500/20">
                     {profile.targetRole}
                   </span>
                 )}
@@ -250,7 +254,7 @@ export const Topbar = ({ setMobileOpen }) => {
                     navigate('/profile');
                     setShowProfileMenu(false);
                   }}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 text-xs text-slate-300 hover:text-white hover:bg-slate-800/60 rounded-xl transition-colors text-left"
+                  className="w-full flex items-center gap-2.5 px-3 py-2 text-xs text-slate-700 dark:text-slate-300 hover:text-nexus-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 rounded-xl transition-colors text-left cursor-pointer"
                 >
                   <User className="w-4 h-4 text-slate-400" />
                   <span>My Profile</span>
@@ -260,21 +264,21 @@ export const Topbar = ({ setMobileOpen }) => {
                     navigate('/settings');
                     setShowProfileMenu(false);
                   }}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 text-xs text-slate-300 hover:text-white hover:bg-slate-800/60 rounded-xl transition-colors text-left"
+                  className="w-full flex items-center gap-2.5 px-3 py-2 text-xs text-slate-700 dark:text-slate-300 hover:text-nexus-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 rounded-xl transition-colors text-left cursor-pointer"
                 >
                   <SettingsIcon className="w-4 h-4 text-slate-400" />
                   <span>Settings & Preferences</span>
                 </button>
               </div>
 
-              <div className="pt-2 border-t border-slate-800">
+              <div className="pt-2 border-t border-slate-200 dark:border-slate-800">
                 <button
                   onClick={() => {
                     logout();
                     setShowProfileMenu(false);
                     navigate('/login');
                   }}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 text-xs text-rose-400 hover:bg-rose-500/10 rounded-xl transition-colors text-left font-medium"
+                  className="w-full flex items-center gap-2.5 px-3 py-2 text-xs text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-xl transition-colors text-left font-medium cursor-pointer"
                 >
                   <LogOut className="w-4 h-4" />
                   <span>Sign Out</span>
@@ -292,13 +296,13 @@ export const PageHeader = ({ title, subtitle, actionText, onAction, actionIcon: 
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
       <div>
-        <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-white">{title}</h1>
-        {subtitle && <p className="text-sm text-slate-400 mt-1">{subtitle}</p>}
+        <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">{title}</h1>
+        {subtitle && <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">{subtitle}</p>}
       </div>
       {actionText && onAction && (
         <button
           onClick={onAction}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-nexus-600 hover:bg-nexus-500 text-white font-medium text-sm rounded-xl transition-all shadow-lg shadow-nexus-600/20 active:scale-95 shrink-0"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-nexus-600 hover:bg-nexus-500 text-white font-medium text-sm rounded-xl transition-all shadow-md shadow-nexus-600/20 active:scale-95 shrink-0 cursor-pointer"
         >
           {ActionIcon && <ActionIcon className="w-4 h-4" />}
           <span>{actionText}</span>
@@ -308,27 +312,27 @@ export const PageHeader = ({ title, subtitle, actionText, onAction, actionIcon: 
   );
 };
 
-export const StatCard = ({ title, value, change, icon: Icon, color = 'text-nexus-400', progress }) => {
+export const StatCard = ({ title, value, change, icon: Icon, color = 'text-nexus-600 dark:text-nexus-400', progress }) => {
   return (
-    <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 backdrop-blur-sm hover:border-slate-700/80 transition-all">
+    <div className="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 rounded-2xl p-5 backdrop-blur-sm hover:border-slate-300 dark:hover:border-slate-700/80 shadow-xs dark:shadow-none transition-all">
       <div className="flex items-center justify-between mb-3">
-        <span className="text-xs font-semibold text-slate-400 tracking-wide uppercase">{title}</span>
+        <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide uppercase">{title}</span>
         {Icon && (
-          <div className={`p-2 rounded-xl bg-slate-800/80 ${color}`}>
+          <div className={`p-2 rounded-xl bg-slate-100 dark:bg-slate-800/80 ${color}`}>
             <Icon className="w-5 h-5" />
           </div>
         )}
       </div>
       <div className="flex items-baseline justify-between">
-        <h3 className="text-2xl font-bold text-white tracking-tight">{value}</h3>
+        <h3 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">{value}</h3>
         {change && (
-          <span className="text-xs font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+          <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
             {change}
           </span>
         )}
       </div>
       {progress !== undefined && (
-        <div className="w-full bg-slate-800 rounded-full h-1.5 mt-3 overflow-hidden">
+        <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-1.5 mt-3 overflow-hidden">
           <div
             className="bg-nexus-500 h-1.5 rounded-full"
             style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}

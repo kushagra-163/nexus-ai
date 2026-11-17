@@ -1,39 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Zap, Trash2, Edit2, Target, CheckCircle2, ShieldAlert, Search, Filter } from 'lucide-react';
+import { Plus, Zap, Target, CheckCircle2, ShieldAlert, Edit2, Trash2, Search, Filter } from 'lucide-react';
 import { PageHeader } from '../components/Topbar';
 import { Card, ProgressBar } from '../components/Card';
-import { Modal } from '../components/Modal';
-import { Input, Select } from '../components/Input';
 import { Button } from '../components/Button';
+import { Input, Select } from '../components/Input';
+import { Modal } from '../components/Modal';
 import API from '../services/api';
+import { useAuth } from '../context/AuthContext';
 
 export const SkillsPage = () => {
+  const { profile } = useAuth();
   const [skills, setSkills] = useState([]);
   const [gapData, setGapData] = useState(null);
-  const [targetRole, setTargetRole] = useState('AI Engineer');
-
-  // Filter & Search State
+  const [targetRole, setTargetRole] = useState(profile?.targetRole || 'Full Stack Developer');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Add Modal State
+  // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingSkill, setEditingSkill] = useState(null);
   const [skillName, setSkillName] = useState('');
   const [category, setCategory] = useState('Programming');
   const [proficiency, setProficiency] = useState('Intermediate');
-  const [submitting, setSubmitting] = useState(false);
-
-  // Edit Modal State
-  const [editingSkill, setEditingSkill] = useState(null);
   const [editName, setEditName] = useState('');
   const [editCategory, setEditCategory] = useState('Programming');
   const [editProficiency, setEditProficiency] = useState('Intermediate');
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     fetchSkills();
-  }, []);
-
-  useEffect(() => {
     fetchGapAnalysis(targetRole);
   }, [targetRole]);
 
@@ -50,7 +45,7 @@ export const SkillsPage = () => {
 
   const fetchGapAnalysis = async (role) => {
     try {
-      const res = await API.get(`/skills/gap-analysis?role=${encodeURIComponent(role)}`);
+      const res = await API.get(`/skills/gap?targetRole=${encodeURIComponent(role)}`);
       if (res.data.success) {
         setGapData(res.data.data);
       }
@@ -65,17 +60,15 @@ export const SkillsPage = () => {
 
     setSubmitting(true);
     try {
-      const res = await API.post('/skills', {
-        name: skillName,
+      await API.post('/skills', {
+        name: skillName.trim(),
         category,
         proficiency,
       });
-      if (res.data.success) {
-        setSkills([...skills, res.data.data]);
-        setSkillName('');
-        setIsModalOpen(false);
-        fetchGapAnalysis(targetRole);
-      }
+      setIsModalOpen(false);
+      setSkillName('');
+      fetchSkills();
+      fetchGapAnalysis(targetRole);
     } catch (err) {
       console.error('Failed to add skill:', err.message);
     } finally {
@@ -86,8 +79,8 @@ export const SkillsPage = () => {
   const handleOpenEditModal = (skill) => {
     setEditingSkill(skill);
     setEditName(skill.name);
-    setEditCategory(skill.category || 'Programming');
-    setEditProficiency(skill.proficiency || 'Intermediate');
+    setEditCategory(skill.category);
+    setEditProficiency(skill.proficiency);
   };
 
   const handleUpdateSkill = async (e) => {
@@ -96,16 +89,14 @@ export const SkillsPage = () => {
 
     setSubmitting(true);
     try {
-      const res = await API.put(`/skills/${editingSkill._id}`, {
-        name: editName,
+      await API.put(`/skills/${editingSkill._id}`, {
+        name: editName.trim(),
         category: editCategory,
         proficiency: editProficiency,
       });
-      if (res.data.success) {
-        setSkills(skills.map((s) => (s._id === editingSkill._id ? res.data.data : s)));
-        setEditingSkill(null);
-        fetchGapAnalysis(targetRole);
-      }
+      setEditingSkill(null);
+      fetchSkills();
+      fetchGapAnalysis(targetRole);
     } catch (err) {
       console.error('Failed to update skill:', err.message);
     } finally {
@@ -116,7 +107,7 @@ export const SkillsPage = () => {
   const handleDeleteSkill = async (id) => {
     try {
       await API.delete(`/skills/${id}`);
-      setSkills(skills.filter((s) => s._id !== id));
+      fetchSkills();
       fetchGapAnalysis(targetRole);
     } catch (err) {
       console.error('Failed to delete skill:', err.message);
@@ -136,11 +127,11 @@ export const SkillsPage = () => {
     switch (prof) {
       case 'Expert':
       case 'Advanced':
-        return 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20';
+        return 'text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/20';
       case 'Intermediate':
-        return 'text-nexus-400 bg-nexus-500/10 border-nexus-500/20';
+        return 'text-nexus-700 dark:text-nexus-400 bg-nexus-500/10 border-nexus-500/20';
       default:
-        return 'text-slate-400 bg-slate-800/40 border-slate-700/50';
+        return 'text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/40 border-slate-200 dark:border-slate-700/50';
     }
   };
 
@@ -155,15 +146,15 @@ export const SkillsPage = () => {
       />
 
       {/* SKILL GAP ANALYZER CARD */}
-      <Card className="bg-slate-900/80 border-nexus-500/30 p-6 space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+      <Card className="bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-nexus-500/30 p-6 space-y-6 shadow-xs dark:shadow-none">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-nexus-600/20 text-nexus-400 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-2xl bg-nexus-600/10 dark:bg-nexus-600/20 text-nexus-600 dark:text-nexus-400 flex items-center justify-center shadow-xs">
               <Target className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-white">Target Role Skill Gap Analyzer</h3>
-              <p className="text-xs text-slate-400">Audit current readiness score for specific software positions</p>
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">Target Role Skill Gap Analyzer</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Audit current readiness score for specific software positions</p>
             </div>
           </div>
 
@@ -187,16 +178,16 @@ export const SkillsPage = () => {
         {gapData && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-300">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                 {targetRole} Readiness Match
               </span>
-              <span className="text-lg font-extrabold text-white">{gapData.readinessScore}%</span>
+              <span className="text-lg font-extrabold text-slate-900 dark:text-white">{gapData.readinessScore}%</span>
             </div>
             <ProgressBar progress={gapData.readinessScore} />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-              <div className="bg-slate-950/60 p-4 rounded-xl border border-slate-800 space-y-2">
-                <span className="text-xs font-semibold text-emerald-400 flex items-center gap-1.5">
+              <div className="bg-slate-50 dark:bg-slate-950/60 p-4 rounded-xl border border-slate-200 dark:border-slate-800 space-y-2">
+                <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
                   <CheckCircle2 className="w-4 h-4" />
                   <span>Matched Skills ({gapData.currentSkills?.length || 0})</span>
                 </span>
@@ -204,7 +195,7 @@ export const SkillsPage = () => {
                   {gapData.currentSkills?.map((s, idx) => (
                     <span
                       key={idx}
-                      className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-xs font-medium text-emerald-300"
+                      className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-xs font-medium text-emerald-700 dark:text-emerald-300"
                     >
                       {s}
                     </span>
@@ -212,8 +203,8 @@ export const SkillsPage = () => {
                 </div>
               </div>
 
-              <div className="bg-slate-950/60 p-4 rounded-xl border border-slate-800 space-y-2">
-                <span className="text-xs font-semibold text-rose-400 flex items-center gap-1.5">
+              <div className="bg-slate-50 dark:bg-slate-950/60 p-4 rounded-xl border border-slate-200 dark:border-slate-800 space-y-2">
+                <span className="text-xs font-semibold text-rose-600 dark:text-rose-400 flex items-center gap-1.5">
                   <ShieldAlert className="w-4 h-4" />
                   <span>High Priority Missing Skills ({gapData.missingSkills?.length || 0})</span>
                 </span>
@@ -221,7 +212,7 @@ export const SkillsPage = () => {
                   {gapData.missingSkills?.map((s, idx) => (
                     <span
                       key={idx}
-                      className="px-2 py-0.5 rounded bg-rose-500/10 border border-rose-500/20 text-xs font-medium text-rose-300"
+                      className="px-2 py-0.5 rounded bg-rose-500/10 border border-rose-500/20 text-xs font-medium text-rose-700 dark:text-rose-300"
                     >
                       + {s}
                     </span>
@@ -234,17 +225,17 @@ export const SkillsPage = () => {
       </Card>
 
       {/* FILTER & SEARCH CONTROLS */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-900/50 p-4 rounded-2xl border border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-900/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs dark:shadow-none">
         <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
           <Filter className="w-4 h-4 text-slate-400 shrink-0" />
           {allFilterCategories.map((cat) => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1 rounded-xl text-xs font-medium transition-all shrink-0 ${
+              className={`px-3 py-1 rounded-xl text-xs font-semibold transition-all shrink-0 cursor-pointer ${
                 selectedCategory === cat
                   ? 'bg-nexus-600 text-white shadow-md shadow-nexus-600/30'
-                  : 'bg-slate-800/60 text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                  : 'bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-transparent text-slate-700 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-800 shadow-xs'
               }`}
             >
               {cat}
@@ -253,28 +244,28 @@ export const SkillsPage = () => {
         </div>
 
         <div className="relative w-full sm:w-64">
-          <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             placeholder="Search skills..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-nexus-500"
+            className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl pl-9 pr-3 py-1.5 text-xs text-slate-900 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-nexus-500"
           />
         </div>
       </div>
 
-      {/* SKILL MATRIX BY CATEGORY */}
-      <div className="space-y-6">
+      {/* SKILL CATEGORIES INVENTORY GRID */}
+      <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-bold text-white flex items-center gap-2">
-            <Zap className="w-5 h-5 text-nexus-400" />
+          <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <Zap className="w-5 h-5 text-nexus-600 dark:text-nexus-400" />
             <span>
               Skill Inventory Matrix ({filteredSkills.length} of {skills.length})
             </span>
           </h3>
           {selectedCategory !== 'All' && (
-            <span className="text-xs text-nexus-400">Filtering: {selectedCategory}</span>
+            <span className="text-xs text-nexus-600 dark:text-nexus-400 font-medium">Filtering: {selectedCategory}</span>
           )}
         </div>
 
@@ -283,8 +274,8 @@ export const SkillsPage = () => {
             const categorySkills = filteredSkills.filter((s) => s.category === cat);
             return (
               <Card key={cat} className="space-y-3">
-                <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300">{cat}</h4>
+                <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">{cat}</h4>
                   <span className="text-xs text-slate-500 font-semibold">{categorySkills.length}</span>
                 </div>
 
@@ -293,10 +284,10 @@ export const SkillsPage = () => {
                     categorySkills.map((skill) => (
                       <div
                         key={skill._id}
-                        className="flex items-center justify-between p-2.5 bg-slate-950/60 rounded-xl border border-slate-800/60 hover:border-slate-700 transition-colors"
+                        className="flex items-center justify-between p-2.5 bg-slate-50 dark:bg-slate-950/60 rounded-xl border border-slate-200 dark:border-slate-800/60 hover:border-slate-300 dark:hover:border-slate-700 transition-colors shadow-xs dark:shadow-none"
                       >
                         <div>
-                          <span className="text-xs font-semibold text-slate-200">{skill.name}</span>
+                          <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">{skill.name}</span>
                           <span
                             className={`inline-block ml-2 text-[10px] px-1.5 py-0.2 rounded border ${getProficiencyBadgeClass(
                               skill.proficiency
@@ -308,14 +299,14 @@ export const SkillsPage = () => {
                         <div className="flex items-center gap-1">
                           <button
                             onClick={() => handleOpenEditModal(skill)}
-                            className="p-1 text-slate-500 hover:text-nexus-400 transition-colors"
+                            className="p-1 text-slate-400 hover:text-nexus-600 dark:text-slate-500 dark:hover:text-nexus-400 transition-colors cursor-pointer"
                             title="Edit Skill"
                           >
                             <Edit2 className="w-3.5 h-3.5" />
                           </button>
                           <button
                             onClick={() => handleDeleteSkill(skill._id)}
-                            className="p-1 text-slate-500 hover:text-rose-400 transition-colors"
+                            className="p-1 text-slate-400 hover:text-rose-600 dark:text-slate-500 dark:hover:text-rose-400 transition-colors cursor-pointer"
                             title="Remove Skill"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -358,7 +349,7 @@ export const SkillsPage = () => {
             options={['Beginner', 'Intermediate', 'Advanced', 'Expert']}
           />
 
-          <div className="flex justify-end gap-3 pt-4 border-t border-slate-800">
+          <div className="flex justify-end gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
             <Button variant="secondary" onClick={() => setIsModalOpen(false)}>
               Cancel
             </Button>
@@ -394,7 +385,7 @@ export const SkillsPage = () => {
             options={['Beginner', 'Intermediate', 'Advanced', 'Expert']}
           />
 
-          <div className="flex justify-end gap-3 pt-4 border-t border-slate-800">
+          <div className="flex justify-end gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
             <Button variant="secondary" onClick={() => setEditingSkill(null)}>
               Cancel
             </Button>

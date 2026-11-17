@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, FolderGit2, Code, ExternalLink, Sparkles, Trash2, Edit2, Award, CheckCircle2, Search, Filter } from 'lucide-react';
+import { Plus, FolderGit2, Code, ExternalLink, Sparkles, Trash2, Edit2, Search, Filter } from 'lucide-react';
 import { PageHeader } from '../components/Topbar';
 import { Card, Badge } from '../components/Card';
 import { Modal } from '../components/Modal';
@@ -9,7 +9,6 @@ import API from '../services/api';
 
 export const ProjectsPage = () => {
   const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [analyzingId, setAnalyzingId] = useState(null);
 
   // Search and Filter State
@@ -50,8 +49,6 @@ export const ProjectsPage = () => {
       }
     } catch (err) {
       console.error('Failed to fetch projects:', err.message);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -179,10 +176,10 @@ export const ProjectsPage = () => {
       />
 
       {/* FILTER & SEARCH CONTROLS */}
-      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-slate-900/60 p-4 rounded-2xl border border-slate-800">
+      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-white dark:bg-slate-900/60 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs dark:shadow-none">
         {/* Status Pills */}
         <div className="flex flex-wrap items-center gap-2">
-          <div className="flex items-center gap-1.5 text-xs text-slate-400 mr-1">
+          <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 mr-1">
             <Filter className="w-3.5 h-3.5" />
             <span>Status:</span>
           </div>
@@ -193,16 +190,16 @@ export const ProjectsPage = () => {
               <button
                 key={opt}
                 onClick={() => setStatusFilter(opt)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all flex items-center gap-1.5 ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all flex items-center gap-1.5 cursor-pointer ${
                   isSelected
-                    ? 'bg-nexus-500/20 text-nexus-400 border border-nexus-500/30 font-semibold shadow-sm'
-                    : 'bg-slate-800/40 text-slate-400 hover:text-slate-200 border border-slate-700/40'
+                    ? 'bg-nexus-500/20 text-nexus-700 dark:text-nexus-400 border border-nexus-500/40 font-semibold shadow-xs'
+                    : 'bg-slate-100 dark:bg-slate-800/40 text-slate-700 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 border border-slate-200 dark:border-slate-700/40'
                 }`}
               >
                 <span>{opt}</span>
                 <span
                   className={`text-[10px] px-1.5 py-0.2 rounded-full ${
-                    isSelected ? 'bg-nexus-500/30 text-nexus-300' : 'bg-slate-700 text-slate-400'
+                    isSelected ? 'bg-nexus-500/30 text-nexus-800 dark:text-nexus-300' : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-400'
                   }`}
                 >
                   {count}
@@ -214,13 +211,13 @@ export const ProjectsPage = () => {
 
         {/* Search input */}
         <div className="relative min-w-[240px]">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             placeholder="Search projects or tech stack..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-nexus-500"
+            className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl pl-9 pr-3 py-1.5 text-xs text-slate-900 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-nexus-500"
           />
         </div>
       </div>
@@ -233,12 +230,12 @@ export const ProjectsPage = () => {
               <div className="space-y-3">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-9 h-9 rounded-xl bg-nexus-600/20 text-nexus-400 flex items-center justify-center shrink-0">
+                    <div className="w-9 h-9 rounded-xl bg-nexus-600/10 dark:bg-nexus-600/20 text-nexus-600 dark:text-nexus-400 flex items-center justify-center shrink-0 shadow-xs">
                       <FolderGit2 className="w-5 h-5" />
                     </div>
                     <div>
-                      <h3 className="text-base font-bold text-white">{project.title}</h3>
-                      <span className="text-[11px] text-slate-400">{project.role}</span>
+                      <h3 className="text-base font-bold text-slate-900 dark:text-white">{project.title}</h3>
+                      <span className="text-[11px] text-slate-500 dark:text-slate-400">{project.role}</span>
                     </div>
                   </div>
 
@@ -256,14 +253,14 @@ export const ProjectsPage = () => {
                     </Badge>
                     <button
                       onClick={() => handleOpenEditModal(project)}
-                      className="p-1.5 rounded-lg text-slate-500 hover:text-nexus-400 hover:bg-nexus-500/10 transition-colors"
+                      className="p-1.5 rounded-lg text-slate-400 hover:text-nexus-600 dark:text-slate-500 dark:hover:text-nexus-400 hover:bg-slate-100 dark:hover:bg-nexus-500/10 transition-colors cursor-pointer"
                       title="Edit Project"
                     >
                       <Edit2 className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => handleDeleteProject(project._id)}
-                      className="p-1.5 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+                      className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 dark:text-slate-500 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors cursor-pointer"
                       title="Delete Project"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -271,14 +268,14 @@ export const ProjectsPage = () => {
                   </div>
                 </div>
 
-                <p className="text-xs text-slate-300 leading-relaxed">{project.description}</p>
+                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">{project.description}</p>
 
                 {/* TECH STACK TAGS */}
                 <div className="flex flex-wrap gap-1.5 pt-1">
                   {project.technologies?.map((tech, idx) => (
                     <span
                       key={idx}
-                      className="px-2.5 py-0.5 rounded-md bg-slate-800 text-[11px] font-medium text-slate-300 border border-slate-700/60"
+                      className="px-2.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-[11px] font-medium text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60"
                     >
                       {tech}
                     </span>
@@ -288,29 +285,29 @@ export const ProjectsPage = () => {
 
               {/* AI FEEDBACK SUMMARY IF AVAILABLE */}
               {project.aiFeedback && (
-                <div className="p-3.5 bg-slate-950/80 border border-slate-800 rounded-xl space-y-2 text-xs">
+                <div className="p-3.5 bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 rounded-xl space-y-2 text-xs">
                   <div className="flex items-center justify-between">
-                    <span className="font-semibold text-slate-200 flex items-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5 text-nexus-400" />
+                    <span className="font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-nexus-600 dark:text-nexus-400" />
                       <span>AI Quality Rating</span>
                     </span>
-                    <span className="font-bold text-nexus-400">
+                    <span className="font-bold text-nexus-600 dark:text-nexus-400">
                       {project.aiFeedback.qualityRating || 85}/100
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-400">{project.aiFeedback.resumeImpact}</p>
+                  <p className="text-slate-600 dark:text-slate-400 leading-relaxed">{project.aiFeedback.feedback}</p>
                 </div>
               )}
 
-              {/* FOOTER LINKS & AUDIT ACTION */}
-              <div className="flex items-center justify-between pt-3 border-t border-slate-800">
-                <div className="flex items-center gap-3 text-xs">
+              {/* FOOTER ACTIONS */}
+              <div className="flex items-center justify-between pt-3 border-t border-slate-200 dark:border-slate-800 text-xs">
+                <div className="flex items-center gap-3">
                   {project.githubUrl && (
                     <a
                       href={project.githubUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="flex items-center gap-1 text-slate-400 hover:text-white"
+                      className="flex items-center gap-1 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                     >
                       <Code className="w-4 h-4" />
                       <span>Code</span>
@@ -321,7 +318,7 @@ export const ProjectsPage = () => {
                       href={project.liveUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="flex items-center gap-1 text-slate-400 hover:text-white"
+                      className="flex items-center gap-1 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                     >
                       <ExternalLink className="w-4 h-4" />
                       <span>Demo</span>
@@ -335,7 +332,7 @@ export const ProjectsPage = () => {
                   loading={analyzingId === project._id}
                   onClick={() => handleAnalyzeProject(project._id)}
                   icon={Sparkles}
-                  className="text-xs text-nexus-400 hover:text-nexus-300"
+                  className="text-xs text-nexus-600 dark:text-nexus-400 hover:text-nexus-700 dark:hover:text-nexus-300"
                 >
                   Run AI Audit
                 </Button>
@@ -344,8 +341,8 @@ export const ProjectsPage = () => {
           ))}
         </div>
       ) : (
-        <Card className="text-center py-12 text-slate-400 space-y-3">
-          <FolderGit2 className="w-10 h-10 mx-auto text-slate-600" />
+        <Card className="text-center py-12 text-slate-500 dark:text-slate-400 space-y-3">
+          <FolderGit2 className="w-10 h-10 mx-auto text-slate-400 dark:text-slate-600" />
           <p className="text-sm">No projects match the current search or status filter.</p>
           {(statusFilter !== 'All' || searchQuery) && (
             <Button
@@ -362,7 +359,7 @@ export const ProjectsPage = () => {
         </Card>
       )}
 
-      {/* CREATE PROJECT MODAL */}
+      {/* ADD PROJECT MODAL */}
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Add Portfolio Project">
         <form onSubmit={handleCreateProject} className="space-y-4">
           <Input
@@ -418,7 +415,7 @@ export const ProjectsPage = () => {
             />
           </div>
 
-          <div className="flex justify-end gap-3 pt-4 border-t border-slate-800">
+          <div className="flex justify-end gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
             <Button variant="secondary" onClick={() => setIsModalOpen(false)}>
               Cancel
             </Button>
@@ -489,7 +486,7 @@ export const ProjectsPage = () => {
             />
           </div>
 
-          <div className="flex justify-end gap-3 pt-4 border-t border-slate-800">
+          <div className="flex justify-end gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
             <Button variant="secondary" onClick={() => setEditingProject(null)}>
               Cancel
             </Button>
