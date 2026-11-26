@@ -86,7 +86,10 @@ JWT_SECRET=your_secure_jwt_secret_here
 GEMINI_API_KEY=your_google_gemini_api_key_here
 CLIENT_URL=http://localhost:5174
 NODE_ENV=development
+TRUST_PROXY=0
 ```
+
+*(Set `TRUST_PROXY` to the number of reverse proxies in front of the server, for example `1` behind nginx or a PaaS router, so rate limiting counts each client by its real address. Leave it at `0` if the server is exposed directly, otherwise `X-Forwarded-For` can be spoofed.)*
 
 *(Note: If `GEMINI_API_KEY` is not provided, the modular AI service layer automatically runs its smart local fallback engine so all features remain functional out of the box).*
 
