@@ -2,6 +2,11 @@ export const errorHandler = (err, req, res, next) => {
   let statusCode = res.statusCode && res.statusCode !== 200 ? res.statusCode : 500;
   let message = err.message || 'Internal Server Error';
 
+  // Errors that carry their own 4xx status (for example the upload file filter)
+  if (Number.isInteger(err.statusCode) && err.statusCode >= 400 && err.statusCode < 500) {
+    statusCode = err.statusCode;
+  }
+
   // Handle Mongoose CastError (invalid ObjectId)
   if (err.name === 'CastError') {
     statusCode = 400;

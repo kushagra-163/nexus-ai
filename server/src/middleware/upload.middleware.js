@@ -17,13 +17,20 @@ const storage = multer.diskStorage({
   },
 });
 
-const fileFilter = (req, file, cb) => {
-  const allowedExtensions = ['.pdf', '.txt', '.doc', '.docx'];
-  const ext = path.extname(file.originalname).toLowerCase();
-  if (allowedExtensions.includes(ext)) {
+export const getResumeFileKind = (filename = '') => {
+  const ext = path.extname(filename).toLowerCase();
+  if (ext === '.pdf') return 'pdf';
+  if (ext === '.txt') return 'text';
+  return null;
+};
+
+export const fileFilter = (req, file, cb) => {
+  if (getResumeFileKind(file.originalname)) {
     cb(null, true);
   } else {
-    cb(new Error('Only PDF and text document files are allowed!'), false);
+    const err = new Error('Unsupported file type. Please upload a PDF or .txt resume (.doc and .docx are not supported yet).');
+    err.statusCode = 415;
+    cb(err, false);
   }
 };
 
