@@ -1,5 +1,6 @@
 import fs from 'fs';
 import pdfParse from 'pdf-parse';
+import { getResumeFileKind } from '../middleware/upload.middleware.js';
 import { Resume } from '../models/Resume.js';
 import { Activity } from '../models/Activity.js';
 import { Profile } from '../models/Profile.js';
@@ -9,12 +10,18 @@ import { getResumeAnalysisPrompt } from '../services/ai/prompt.service.js';
 export const uploadAndAnalyzeResume = async (req, res, next) => {
   try {
     if (!req.file) {
-      return res.status(400).json({ success: false, message: 'Please upload a PDF or text resume file' });
+      return res.status(400).json({ success: false, message: 'Please upload a PDF or .txt resume file' });
     }
 
     let extractedText = '';
 
-    if (req.file.mimetype === 'application/pdf') {
+    const kind = getResumeFileKind(req.file.originalname);
+    if (!kind) {
+      fs.unlink(req.file.path, () => {});
+      return res.status(415).json({ success: false, message: 'Unsupported file type. Please upload a PDF or .txt resume.' });
+    }
+
+    if (kind === 'pdf') {
       const dataBuffer = fs.readFileSync(req.file.path);
       const parsed = await pdfParse(dataBuffer);
       extractedText = parsed.text;

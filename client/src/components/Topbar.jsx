@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { ThemeToggle } from './ThemeToggle';
 import {
   Menu,
   Search,
@@ -173,7 +174,7 @@ export const Topbar = ({ setMobileOpen }) => {
             Readiness Score: <strong className="text-white">{profile?.readinessScore || 70}%</strong>
           </span>
         </div>
-
+        <ThemeToggle />
         {/* Notifications Dropdown */}
         <div ref={notificationsRef} className="relative">
           <button

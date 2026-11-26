@@ -1,9 +1,10 @@
 import jwt from 'jsonwebtoken';
 import { User } from '../models/User.js';
 import { Profile } from '../models/Profile.js';
+import { getJwtSecret } from '../config/jwt.js';
 
 const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET || 'nexus_ai_super_secret_jwt_key_2026', {
+  return jwt.sign({ id }, getJwtSecret(), {
     expiresIn: '30d',
   });
 };

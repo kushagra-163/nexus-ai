@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTheme } from '../context/ThemeContext';
 import { BarChart3, TrendingUp, Award, Zap, Target } from 'lucide-react';
 import {
   LineChart,
@@ -14,7 +15,6 @@ import {
 import { PageHeader, StatCard } from '../components/Topbar';
 import { Card } from '../components/Card';
 import API from '../services/api';
-
 const readinessTrendData = [
   { month: 'Jan', readiness: 55, skillCount: 4 },
   { month: 'Feb', readiness: 62, skillCount: 6 },
@@ -24,6 +24,7 @@ const readinessTrendData = [
 ];
 
 export const AnalyticsPage = () => {
+  const { isDark } = useTheme();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -70,12 +71,20 @@ export const AnalyticsPage = () => {
           <div className="h-64 w-full pt-4">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={readinessTrendData} margin={{ top: 10, right: 20, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-                <XAxis dataKey="month" stroke="#64748b" fontSize={11} tickLine={false} />
-                <YAxis stroke="#64748b" fontSize={11} tickLine={false} domain={[40, 100]} />
-                <Tooltip contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '12px', fontSize: '12px' }} />
-                <Line type="monotone" dataKey="readiness" stroke="#6366f1" strokeWidth={3} dot={{ r: 5, fill: '#6366f1' }} />
-              </LineChart>
+                  <CartesianGrid strokeDasharray="3 3" stroke={isDark ? '#1e293b' : '#e2e8f0'} />
+                  <XAxis dataKey="month" stroke={isDark ? '#64748b' : '#475569'} fontSize={11} tickLine={false} />
+                  <YAxis stroke={isDark ? '#64748b' : '#475569'} fontSize={11} tickLine={false} domain={[40, 100]} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: isDark ? '#0f172a' : '#ffffff',
+                      borderColor: isDark ? '#334155' : '#e2e8f0',
+                      color: isDark ? '#f1f5f9' : '#0f172a',
+                      borderRadius: '12px',
+                      fontSize: '12px',
+                    }}
+                  />
+                  <Line type="monotone" dataKey="readiness" stroke="#6366f1" strokeWidth={3} dot={{ r: 5, fill: '#6366f1' }} />
+                </LineChart>
             </ResponsiveContainer>
           </div>
         </Card>
@@ -90,12 +99,20 @@ export const AnalyticsPage = () => {
             {data?.skillDistribution && data.skillDistribution.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={data.skillDistribution} margin={{ top: 10, right: 20, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-                  <XAxis dataKey="category" stroke="#64748b" fontSize={11} tickLine={false} />
-                  <YAxis stroke="#64748b" fontSize={11} tickLine={false} allowDecimals={false} />
-                  <Tooltip contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '12px', fontSize: '12px' }} />
-                  <Bar dataKey="count" fill="#818cf8" radius={[6, 6, 0, 0]} />
-                </BarChart>
+                    <CartesianGrid strokeDasharray="3 3" stroke={isDark ? '#1e293b' : '#e2e8f0'} />
+                    <XAxis dataKey="category" stroke={isDark ? '#64748b' : '#475569'} fontSize={11} tickLine={false} />
+                    <YAxis stroke={isDark ? '#64748b' : '#475569'} fontSize={11} tickLine={false} allowDecimals={false} />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: isDark ? '#0f172a' : '#ffffff',
+                        borderColor: isDark ? '#334155' : '#e2e8f0',
+                        color: isDark ? '#f1f5f9' : '#0f172a',
+                        borderRadius: '12px',
+                        fontSize: '12px',
+                      }}
+                    />
+                    <Bar dataKey="count" fill="#818cf8" radius={[6, 6, 0, 0]} />
+                  </BarChart>
               </ResponsiveContainer>
             ) : (
               <div className="h-full flex items-center justify-center text-xs text-slate-500">
